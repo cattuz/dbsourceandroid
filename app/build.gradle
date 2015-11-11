@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        minSdkVersion 11
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.devexed.dbsource:DBSource:1.0:test'
+    compile 'com.devexed.dbsource:DBSource:1.0'
+}
+
+task sourceJar(type: Jar) {
+    classifier "source"
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            groupId 'com.devexed.dbsourceandroid'
+            artifactId 'DBSourceAndroid'
+            version '1.0'
+            artifact(sourceJar)
+            artifact("$buildDir/outputs/aar/app-release.aar")
+        }
+    }
+}
