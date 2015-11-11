@@ -12,6 +12,7 @@ import java.util.Map;
 abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
 
     final SQLiteStatement statement;
+    final SQLiteBindable bindable;
 
     private final HashMap<String, int[]> parameterIndexes;
 
@@ -22,6 +23,7 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
 
         try {
             statement = database.connection.compileStatement(query.create(database, parameterIndexes));
+            bindable = new SQLiteStatementBindable(statement);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -54,7 +56,7 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
 
             if (indexes == null) throw new DatabaseException("No mapping for parameter " + parameter);
 
-            for (int index: indexes) accessor.setStatement(statement, index + 1, value);
+            for (int index: indexes) accessor.set(bindable, index + 1, value);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }

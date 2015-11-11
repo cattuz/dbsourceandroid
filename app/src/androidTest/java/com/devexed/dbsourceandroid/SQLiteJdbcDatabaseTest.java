@@ -14,13 +14,7 @@ public final class SQLiteJdbcDatabaseTest extends DatabaseTest {
     public TemporaryFolder dbFolder = new TemporaryFolder();
 
     @Override
-    public TransactionDatabase openTransactionDatabase() {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
+    public TransactionDatabase openDatabase() {
         String dbPath = new File(dbFolder.getRoot(), "test.android-sqlite.db").getAbsolutePath();
 
         return AndroidSQLiteDatabase.openWritable(dbPath, AndroidSQLiteDatabase.accessors);

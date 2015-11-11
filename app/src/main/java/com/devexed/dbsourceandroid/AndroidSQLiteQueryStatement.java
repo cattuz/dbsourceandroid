@@ -41,10 +41,12 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
             @Override
             public android.database.Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery,
                                                      String editTable, SQLiteQuery query) {
+                SQLiteBindable bindable = new SQLiteQueryBindable(query);
+
                 for (int i = 0, l = parameterValues.size(); i < l; i++) {
                     int index = parameterValues.keyAt(i);
                     Binding binding = parameterValues.get(index);
-                    binding.accessor.setQuery(query, index, binding.value);
+                    binding.accessor.set(bindable, index, binding.value);
                 }
 
                 return new SQLiteCursor(masterQuery, null, query);

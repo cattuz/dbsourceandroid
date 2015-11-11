@@ -10,9 +10,7 @@ import android.database.sqlite.SQLiteStatement;
  */
 public interface AndroidSQLiteAccessor {
 
-    void setStatement(SQLiteStatement statement, int index, Object value);
-
-    void setQuery(SQLiteQuery query, int index, Object value);
+    void set(SQLiteBindable bindable, int index, Object value);
 
     Object get(Cursor cursor, int index) throws SQLException;
 
