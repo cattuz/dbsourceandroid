@@ -66,21 +66,21 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
 	}
 
 	@Override
-	public UpdateStatement prepareUpdate(Query query) {
+	public UpdateStatement createUpdate(Query query) {
 		checkNotClosed();
 
         return new AndroidSQLiteUpdateStatement(this, query);
 	}
 
 	@Override
-	public ExecutionStatement prepareExecution(Query query) {
+	public ExecutionStatement createExecution(Query query) {
 		checkNotClosed();
 
         return new AndroidSQLiteExecutionStatement(this, query);
 	}
 
 	@Override
-	public InsertStatement prepareInsert(Query query, Map<String, Class<?>> keys) {
+	public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
 		checkNotClosed();
 
         return new AndroidSQLiteInsertStatement(this, query, keys);

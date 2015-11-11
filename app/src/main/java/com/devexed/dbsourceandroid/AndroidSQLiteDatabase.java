@@ -318,7 +318,7 @@ public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 	private static AndroidSQLiteDatabase open(String url, Map<Class<?>, AndroidSQLiteAccessor> accessors,
                                               boolean writable) {
 		try {
-            int flags = writable ? SQLiteDatabase.OPEN_READONLY : SQLiteDatabase.CREATE_IF_NECESSARY;
+            int flags = writable ? SQLiteDatabase.CREATE_IF_NECESSARY : SQLiteDatabase.OPEN_READONLY;
             SQLiteDatabase connection = SQLiteDatabase.openDatabase(url, null, flags);
             runPragma(connection, "PRAGMA foreign_keys=on");
             runPragma(connection, "PRAGMA journal_mode=delete");
@@ -337,7 +337,7 @@ public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 	public Transaction transact() {
 		checkNotClosed();
 
-		return new AndroidSQLiteTransaction(this);
+		return new AndroidSQLiteRootTransaction(this);
 	}
 
 	@Override

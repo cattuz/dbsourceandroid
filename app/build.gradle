@@ -18,19 +18,19 @@ repositories {
 }
 
 dependencies {
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'com.devexed.dbsource:DBSource:1.0:test'
     compile 'com.devexed.dbsource:DBSource:1.0'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.devexed.dbsource:DBSource:1.0:tests'
 }
 
 task sourceJar(type: Jar) {
-    classifier "source"
+    classifier "sources"
     from android.sourceSets.main.java.srcDirs
 }
 
 publishing {
     publications {
-        library(MavenPublication) {
+        maveJava(MavenPublication) {
             groupId 'com.devexed.dbsourceandroid'
             artifactId 'DBSourceAndroid'
             version '1.0'

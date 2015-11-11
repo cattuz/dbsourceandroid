@@ -1,6 +1,8 @@
 package com.devexed.dbsourceandroid;
 
+import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteStatement;
 
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.Query;
@@ -19,7 +21,7 @@ final class AndroidSQLiteUpdateStatement extends AndroidSQLiteStatementStatement
 		checkActiveTransaction(transaction);
 
 		try {
-			return statement.executeUpdateDelete();
+            return statement.executeUpdateDelete();
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}

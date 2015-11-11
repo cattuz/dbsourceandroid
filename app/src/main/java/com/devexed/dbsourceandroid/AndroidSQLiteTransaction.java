@@ -5,7 +5,7 @@ import android.database.SQLException;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.Transaction;
 
-final class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase implements Transaction {
+abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase implements Transaction {
 
 	private boolean committed = false;
     private boolean hasChild = false;
@@ -16,7 +16,14 @@ final class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase imple
 	 */
 	AndroidSQLiteTransaction(AndroidSQLiteAbstractDatabase parent) {
 		super(parent.connection, parent.accessors);
+        beginTransaction();
 	}
+
+    abstract void beginTransaction();
+
+    abstract void commitTransaction();
+
+    abstract void rollbackTransaction();
 
     private void checkNotCommitted() {
         if (committed) throw new DatabaseException("Already committed");
@@ -43,7 +50,7 @@ final class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase imple
 
         try {
             hasChild = true;
-            return new AndroidSQLiteTransaction(this);
+            return new AndroidSQLiteNestedTransaction(this);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -52,26 +59,15 @@ final class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase imple
     @Override
     public final void commit() {
         checkActive();
-
-        try {
-            connection.setTransactionSuccessful();
-            committed = true;
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        commitTransaction();
+        committed = true;
     }
 
     @Override
-    public final void close() {
+    public void close() {
         checkNotClosed();
         checkChildClosed();
-
-        try {
-            connection.endTransaction();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-
+        if (!committed) rollbackTransaction();
         super.close();
     }
 	
