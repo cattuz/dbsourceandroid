@@ -37,25 +37,24 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
 			// Select last inserted id as key.
 			final long generatedKey = statement.executeInsert();
 
-            return generatedKey >= 0
-                    ? new MockCursor<>(new MockCursor.Getter() {
+            if (generatedKey < 0) return EmptyCursor.of();
 
-                            @Override
-                            public boolean next(int i) {
-                                return i < 0;
-                            }
+            return new MockCursor<>(new MockCursor.Getter() {
 
-                            @Override
-                            @SuppressWarnings("unchecked")
-                            public <E> E get(int i, String column) {
-                                if (!key.equals(column))
-                                    throw new DatabaseException("Column must be key column " + key);
+                @Override
+                public boolean next(int i) {
+                    return i < 0;
+                }
 
-                                return (E) (Long) generatedKey;
-                            }
+                @Override
+                @SuppressWarnings("unchecked")
+                public <E> E get(int i, String column) {
+                    if (!key.equals(column)) throw new DatabaseException("Column must be key column " + key);
 
-                        })
-                    : EmptyCursor.of();
+                    return (E) (Long) generatedKey;
+                }
+
+            });
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
