@@ -8,7 +8,11 @@ android {
     defaultConfig {
         minSdkVersion 11
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
     }
 }
 
@@ -18,9 +22,9 @@ repositories {
 }
 
 dependencies {
-    compile 'com.devexed.dbsource:DBSource:1.0'
+    compile 'com.devexed.dbsource:DBSource:0.1'
     androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'com.devexed.dbsource:DBSource:1.0:tests'
+    androidTestCompile 'com.devexed.dbsource:DBSource:0.1:tests'
 }
 
 task sourceJar(type: Jar) {
@@ -33,7 +37,7 @@ publishing {
         maveJava(MavenPublication) {
             groupId 'com.devexed.dbsourceandroid'
             artifactId 'DBSourceAndroid'
-            version '1.0'
+            version '0.1'
             artifact(sourceJar)
             artifact("$buildDir/outputs/aar/app-release.aar")
         }

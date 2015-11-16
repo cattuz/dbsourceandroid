@@ -31,7 +31,7 @@ public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
             @Override
             public void set(SQLiteBindable bindable, int index, Object value) throws SQLException {
                 if (value == null) throw new NullPointerException("Parameter with type boolean can not be null.");
-                bindable.bindLong(index, (boolean) value ? 1 : 0);
+                bindable.bindLong(index, (boolean) (Boolean) value ? 1 : 0);
             }
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
@@ -89,7 +89,7 @@ public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
             public Object get(Cursor cursor, int index) throws SQLException {
                 if (cursor.isNull(index))
                     throw new NullPointerException("Illegal null value for type long in result set.");
-                return (long) cursor.getLong(index);
+                return cursor.getLong(index);
             }
         });
         put(Float.TYPE, new AndroidSQLiteAccessor() {
@@ -115,14 +115,14 @@ public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
             public Object get(Cursor cursor, int index) throws SQLException {
                 if (cursor.isNull(index))
                     throw new NullPointerException("Illegal null value for type double in result set.");
-                return (double) cursor.getDouble(index);
+                return cursor.getDouble(index);
             }
         });
         put(Boolean.class, new AndroidSQLiteAccessor() {
             @Override
             public void set(SQLiteBindable bindable, int index, Object value) throws SQLException {
                 if (value == null) bindable.bindNull(index);
-                else bindable.bindLong(index, (boolean) value ? 1 : 0);
+                else bindable.bindLong(index, (boolean) (Boolean) value ? 1 : 0);
             }
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {

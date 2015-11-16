@@ -1,13 +1,12 @@
 package com.devexed.dbsourceandroid;
 
-import android.database.Cursor;
 import android.database.SQLException;
 
 import com.devexed.dbsource.AbstractCloseable;
-import com.devexed.dbsource.DatabaseCursor;
+import com.devexed.dbsource.Cursor;
 import com.devexed.dbsource.DatabaseException;
 
-final class AndroidSQLiteCursor extends AbstractCloseable implements DatabaseCursor {
+final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
 	public interface AccessorFunction {
 
@@ -20,29 +19,41 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements DatabaseCur
 	}
 
     private final AccessorFunction typeOfFunction;
-	private final Cursor cursor;
+	private final android.database.Cursor cursor;
 	
-	AndroidSQLiteCursor(AccessorFunction typeOfFunction, Cursor cursor) {
+	AndroidSQLiteCursor(AccessorFunction typeOfFunction, android.database.Cursor cursor) {
 		this.typeOfFunction = typeOfFunction;
 		this.cursor = cursor;
 	}
 
     @Override
-    protected void checkNotClosed() {
-        super.checkNotClosed();
-
-        if (cursor.isClosed()) throw new DatabaseException("Cursor is closed.");
+    protected boolean isClosed() {
+        return cursor.isClosed() || super.isClosed();
     }
-	
-	@Override
-	public boolean next() {
+
+    @Override
+	public boolean seek(int rows) {
 		checkNotClosed();
-		
+
 		try {
-			return cursor.moveToNext();
+			if (cursor.move(rows)) return true;
 		} catch (SQLException e) {
 			throw new DatabaseException(e);
 		}
+
+		close();
+
+		return false;
+	}
+
+	@Override
+	public boolean previous() {
+		return seek(-1);
+	}
+
+	@Override
+	public boolean next() {
+		return seek(1);
 	}
 
 	@Override
@@ -53,11 +64,11 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements DatabaseCur
 		try {
             int index = cursor.getColumnIndex(column);
 
-			if (index < 0) throw new DatabaseException("Column " + column + " not found.");
+			if (index < 0) throw new DatabaseException("No such column " + column);
 
 			AndroidSQLiteAccessor accessor = typeOfFunction.accessorOf(column);
 
-			if (accessor == null) throw new DatabaseException("No accessor is defined for column " + column + ".");
+			if (accessor == null) throw new DatabaseException("No accessor is defined for column " + column);
 
 			return (T) accessor.get(cursor, index);
 		} catch (SQLException e) {
@@ -67,12 +78,15 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements DatabaseCur
 
     @Override
     public void close() {
-        super.close();
+        if (isClosed()) return;
 
         try {
             cursor.close();
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+
+        super.close();
     }
+
 }

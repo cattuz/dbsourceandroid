@@ -7,46 +7,55 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
 import android.util.SparseArray;
 
-import com.devexed.dbsource.DatabaseCursor;
+import com.devexed.dbsource.Cursor;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.Query;
 import com.devexed.dbsource.QueryStatement;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implements QueryStatement {
 
     private static final class Binding {
         final Object value;
         final AndroidSQLiteAccessor accessor;
+        final int[] indexes;
 
-        private Binding(Object value, AndroidSQLiteAccessor accessor) {
+        Binding(Object value, AndroidSQLiteAccessor accessor, int[] indexes) {
             this.value = value;
             this.accessor = accessor;
+            this.indexes = indexes;
         }
     }
 
     private final String queryString;
-    private final SparseArray<Binding> parameterValues;
+    private final HashMap<String, Binding> parameterBindings;
     private final HashMap<String, int[]> parameterIndexes;
     private final SQLiteDatabase.CursorFactory cursorFactory;
 
 	public AndroidSQLiteQueryStatement(AndroidSQLiteAbstractDatabase database, Query query) {
 		super(database, query);
         parameterIndexes = new HashMap<String, int[]>();
-        parameterValues = new SparseArray<Binding>();
+        parameterBindings = new HashMap<String, Binding>();
         queryString = query.create(database, parameterIndexes);
         cursorFactory = new SQLiteDatabase.CursorFactory() {
 
             @Override
             public android.database.Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery,
                                                      String editTable, SQLiteQuery query) {
+                // Check all parameters have been bound.
+                HashSet<String> unboundParameters = new HashSet<String>(parameterIndexes.keySet());
+                unboundParameters.removeAll(parameterBindings.keySet());
+
+                if (!unboundParameters.isEmpty())
+                    throw new DatabaseException("Unbound parameters " + unboundParameters.toString());
+
+                // Bind parameters to query.
                 SQLiteBindable bindable = new SQLiteQueryBindable(query);
 
-                for (int i = 0, l = parameterValues.size(); i < l; i++) {
-                    int index = parameterValues.keyAt(i);
-                    Binding binding = parameterValues.get(index);
-                    binding.accessor.set(bindable, index, binding.value);
+                for (Binding binding: parameterBindings.values()) {
+                    for (int index: binding.indexes) binding.accessor.set(bindable, index + 1, binding.value);
                 }
 
                 return new SQLiteCursor(masterQuery, null, query);
@@ -57,27 +66,26 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
 
     @Override
     public void clear() {
-        parameterValues.clear();
+        parameterBindings.clear();
     }
 
     @Override
     public <T> void bind(String parameter, T value) {
         Class<?> type = query.typeOf(parameter);
-        AndroidSQLiteAccessor accessor = database.accessors.get(type);
+        if (type == null) throw new DatabaseException("No type is defined for parameter " + parameter);
 
-        if (accessor == null) throw new DatabaseException("No accessor is defined for type " + type);
+        AndroidSQLiteAccessor accessor = database.accessors.get(type);
+        if (accessor == null) throw new DatabaseException("No accessor is defined for parameter " + parameter);
 
         int[] indexes = parameterIndexes.get(parameter);
+        if (indexes == null) throw new DatabaseException("Undefined parameter " + parameter);
 
-        if (indexes == null) throw new DatabaseException("No mapping for parameter " + parameter);
-
-        Binding binding = new Binding(value, accessor);
-
-        for (int index: indexes) parameterValues.put(index + 1, binding);
+        Binding binding = new Binding(value, accessor, indexes);
+        parameterBindings.put(parameter, binding);
     }
 
     @Override
-	public DatabaseCursor query() {
+	public Cursor query() {
 		checkNotClosed();
 
 		try {

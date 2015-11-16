@@ -48,12 +48,12 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
 
         try {
             Class<?> type = query.typeOf(parameter);
-            AndroidSQLiteAccessor accessor = database.accessors.get(type);
+            if (type == null) throw new DatabaseException("No type is defined for parameter " + parameter);
 
-            if (accessor == null) throw new DatabaseException("No accessor is defined for type " + type);
+            AndroidSQLiteAccessor accessor = database.accessors.get(type);
+            if (accessor == null) throw new DatabaseException("No accessor is defined for parameter " + parameter);
 
             int[] indexes = parameterIndexes.get(parameter);
-
             if (indexes == null) throw new DatabaseException("No mapping for parameter " + parameter);
 
             for (int index: indexes) accessor.set(bindable, index + 1, value);
