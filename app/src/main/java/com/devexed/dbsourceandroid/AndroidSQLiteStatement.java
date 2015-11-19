@@ -22,5 +22,5 @@ abstract class AndroidSQLiteStatement extends AbstractCloseable implements State
 
         ((AndroidSQLiteTransaction) transaction).checkActive();
     }
-	
+
 }

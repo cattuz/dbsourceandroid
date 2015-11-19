@@ -7,17 +7,18 @@ import com.devexed.dbsource.Transaction;
 
 abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase implements Transaction {
 
-	private boolean committed = false;
-    private boolean hasChild = false;
-	
-	/**
-	 * Create a root level transaction. Committing this transaction will
-	 * update the database.
-	 */
-	AndroidSQLiteTransaction(AndroidSQLiteAbstractDatabase parent) {
-		super(parent.connection, parent.accessors);
+    private final AndroidSQLiteAbstractDatabase parent;
+    private boolean committed = false;
+
+    /**
+     * Create a root level transaction. Committing this transaction will
+     * update the database.
+     */
+    AndroidSQLiteTransaction(AndroidSQLiteAbstractDatabase parent) {
+        super(parent.connection, parent.accessorFactory);
+        this.parent = parent;
         beginTransaction();
-	}
+    }
 
     abstract void beginTransaction();
 
@@ -29,19 +30,10 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
         if (committed) throw new DatabaseException("Already committed");
     }
 
-    private void checkChildClosed() {
-        if (hasChild) throw new DatabaseException("Transaction has an open child transaction.");
-    }
-
-	void checkActive() {
+    void checkActive() {
         checkChildClosed();
-		checkNotCommitted();
-		checkNotClosed();
-	}
-
-    void closeActiveTransaction() {
-        if (!hasChild) throw new DatabaseException("Child transaction already closed.");
-        hasChild = false;
+        checkNotCommitted();
+        checkNotClosed();
     }
 
     @Override
@@ -49,8 +41,9 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
         checkActive();
 
         try {
-            hasChild = true;
-            return new AndroidSQLiteNestedTransaction(this);
+            AndroidSQLiteNestedTransaction transaction = new AndroidSQLiteNestedTransaction(this);
+            onOpenChild(transaction);
+            return transaction;
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -59,16 +52,27 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
     @Override
     public final void commit() {
         checkActive();
-        commitTransaction();
-        committed = true;
+
+        try {
+            commitTransaction();
+            committed = true;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void close() {
-        checkNotClosed();
-        checkChildClosed();
-        if (!committed) rollbackTransaction();
+    public final void close() {
+        if (isClosed()) return;
+
         super.close();
+        parent.onCloseChild();
+
+        try {
+            if (!committed) rollbackTransaction();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
-	
+
 }

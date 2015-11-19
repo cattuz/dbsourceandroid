@@ -5,38 +5,26 @@ import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
-import android.util.SparseArray;
 
 import com.devexed.dbsource.Cursor;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.Query;
 import com.devexed.dbsource.QueryStatement;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implements QueryStatement {
 
-    private static final class Binding {
-        final Object value;
-        final AndroidSQLiteAccessor accessor;
-        final int[] indexes;
-
-        Binding(Object value, AndroidSQLiteAccessor accessor, int[] indexes) {
-            this.value = value;
-            this.accessor = accessor;
-            this.indexes = indexes;
-        }
-    }
-
     private final String queryString;
     private final HashMap<String, Binding> parameterBindings;
-    private final HashMap<String, int[]> parameterIndexes;
+    private final HashMap<String, ArrayList<Integer>> parameterIndexes;
     private final SQLiteDatabase.CursorFactory cursorFactory;
 
-	public AndroidSQLiteQueryStatement(AndroidSQLiteAbstractDatabase database, Query query) {
-		super(database, query);
-        parameterIndexes = new HashMap<String, int[]>();
+    public AndroidSQLiteQueryStatement(AndroidSQLiteAbstractDatabase database, Query query) {
+        super(database, query);
+        parameterIndexes = new HashMap<String, ArrayList<Integer>>();
         parameterBindings = new HashMap<String, Binding>();
         queryString = query.create(database, parameterIndexes);
         cursorFactory = new SQLiteDatabase.CursorFactory() {
@@ -54,15 +42,15 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
                 // Bind parameters to query.
                 SQLiteBindable bindable = new SQLiteQueryBindable(query);
 
-                for (Binding binding: parameterBindings.values()) {
-                    for (int index: binding.indexes) binding.accessor.set(bindable, index + 1, binding.value);
+                for (Binding binding : parameterBindings.values()) {
+                    for (int index : binding.indexes) binding.accessor.set(bindable, index + 1, binding.value);
                 }
 
                 return new SQLiteCursor(masterQuery, null, query);
             }
 
         };
-	}
+    }
 
     @Override
     public void clear() {
@@ -74,10 +62,10 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
         Class<?> type = query.typeOf(parameter);
         if (type == null) throw new DatabaseException("No type is defined for parameter " + parameter);
 
-        AndroidSQLiteAccessor accessor = database.accessors.get(type);
+        AndroidSQLiteAccessor accessor = database.accessorFactory.create(type);
         if (accessor == null) throw new DatabaseException("No accessor is defined for parameter " + parameter);
 
-        int[] indexes = parameterIndexes.get(parameter);
+        ArrayList<Integer> indexes = parameterIndexes.get(parameter);
         if (indexes == null) throw new DatabaseException("Undefined parameter " + parameter);
 
         Binding binding = new Binding(value, accessor, indexes);
@@ -85,24 +73,36 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
     }
 
     @Override
-	public Cursor query() {
-		checkNotClosed();
+    public Cursor query() {
+        checkNotClosed();
 
-		try {
-			return new AndroidSQLiteCursor(new AndroidSQLiteCursor.AccessorFunction() {
+        try {
+            return new AndroidSQLiteCursor(database.accessorFactory, new AndroidSQLiteCursor.TypeFunction() {
                 @Override
-                public AndroidSQLiteAccessor accessorOf(String column) {
-                    return database.accessors.get(query.typeOf(column));
+                public Class<?> typeOf(String column) {
+                    return query.typeOf(column);
                 }
             }, database.connection.rawQueryWithFactory(cursorFactory, queryString, new String[0], null));
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
 
     @Override
     public void close() {
         super.close();
+    }
+
+    private static final class Binding {
+        final Object value;
+        final AndroidSQLiteAccessor accessor;
+        final ArrayList<Integer> indexes;
+
+        Binding(Object value, AndroidSQLiteAccessor accessor, ArrayList<Integer> indexes) {
+            this.value = value;
+            this.accessor = accessor;
+            this.indexes = indexes;
+        }
     }
 
 }

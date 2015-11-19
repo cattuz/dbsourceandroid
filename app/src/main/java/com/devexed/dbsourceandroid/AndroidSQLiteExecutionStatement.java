@@ -9,20 +9,20 @@ import com.devexed.dbsource.Transaction;
 
 final class AndroidSQLiteExecutionStatement extends AndroidSQLiteStatementStatement implements ExecutionStatement {
 
-	public AndroidSQLiteExecutionStatement(AndroidSQLiteAbstractDatabase database, Query query) {
-		super(database, query);
-	}
+    public AndroidSQLiteExecutionStatement(AndroidSQLiteAbstractDatabase database, Query query) {
+        super(database, query);
+    }
 
-	@Override
-	public void execute(Transaction transaction) {
-		checkNotClosed();
-		checkActiveTransaction(transaction);
+    @Override
+    public void execute(Transaction transaction) {
+        checkNotClosed();
+        checkActiveTransaction(transaction);
 
-		try {
-			statement.execute();
-		} catch (SQLException e) {
-			throw new DatabaseException(e);
-		}
-	}
+        try {
+            statement.execute();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
 
 }
