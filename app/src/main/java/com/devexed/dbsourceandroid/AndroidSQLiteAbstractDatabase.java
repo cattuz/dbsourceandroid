@@ -4,26 +4,36 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.devexed.dbsource.AbstractCloseable;
+import com.devexed.dbsource.AccessorFactory;
+import com.devexed.dbsource.Connection;
 import com.devexed.dbsource.Database;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.ExecutionStatement;
 import com.devexed.dbsource.InsertStatement;
 import com.devexed.dbsource.Query;
 import com.devexed.dbsource.QueryStatement;
+import com.devexed.dbsource.Statement;
+import com.devexed.dbsource.Transaction;
 import com.devexed.dbsource.UpdateStatement;
+import com.devexed.dbsource.util.AbstractCloseable;
+import com.devexed.dbsource.util.CloseableManager;
 
 import java.util.Map;
 
 abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implements Database {
 
     final SQLiteDatabase connection;
-    final AndroidSQLiteAccessorFactory accessorFactory;
+    final AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory;
+
+    private final Class<?> managerType;
+    private final CloseableManager<AndroidSQLiteStatement> statementManager;
 
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(SQLiteDatabase connection, AndroidSQLiteAccessorFactory accessorFactory) {
+    AndroidSQLiteAbstractDatabase(Class<?> managerType, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory) {
+        this.managerType = managerType;
+        this.statementManager = new CloseableManager<AndroidSQLiteStatement>(Connection.class, managerType);
         this.connection = connection;
         this.accessorFactory = accessorFactory;
     }
@@ -31,24 +41,60 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     /**
      * Check if this transaction has an open child transaction.
      */
-    final void checkChildClosed() {
+    final void checkActive() {
         if (child != null) throw new DatabaseException("Child transaction is still open");
+        checkNotClosed();
     }
 
-    final void onCloseChild() {
-        if (child == null) throw new DatabaseException("No child transaction open");
+    final AndroidSQLiteTransaction openTransaction(AndroidSQLiteTransaction child) {
+        checkActive();
+        this.child = child;
+        return child;
+    }
+
+    /**
+     * Check if this transaction has an open child transaction.
+     */
+    final void checkTransaction(Transaction transaction) {
+        if (transaction == null) throw new NullPointerException("Child transaction is null");
+
+        if (transaction != child)
+            throw new DatabaseException("Child transaction was not started by this " + managerType);
+    }
+
+    @Override
+    public void commit(Transaction transaction) {
+        checkTransaction(transaction);
+        child.checkActive();
+
+        try {
+            child.commitTransaction();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        child.close();
         child = null;
     }
 
-    final void onOpenChild(AndroidSQLiteTransaction child) {
-        checkChildClosed();
-        this.child = child;
+    @Override
+    public void rollback(Transaction transaction) {
+        checkTransaction(transaction);
+        child.checkActive();
+
+        try {
+            child.rollbackTransaction();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        child.close();
+        child = null;
     }
 
     @Override
     public String getType() {
         checkNotClosed();
-
         return "SQLite";
     }
 
@@ -104,12 +150,13 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     }
 
     @Override
+    public void close(Statement statement) {
+        statementManager.close(statement);
+    }
+
+    @Override
     public void close() {
-        if (isClosed()) return;
-
-        // Close child hierarchy, allowing easy cleanup on failure.
-        if (child != null) child.close();
-
+        statementManager.close();
         super.close();
     }
 

@@ -1,10 +1,11 @@
 package com.devexed.dbsourceandroid;
 
-import com.devexed.dbsource.AbstractCloseable;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.Query;
+import com.devexed.dbsource.ReadonlyDatabase;
 import com.devexed.dbsource.Statement;
 import com.devexed.dbsource.Transaction;
+import com.devexed.dbsource.util.AbstractCloseable;
 
 abstract class AndroidSQLiteStatement extends AbstractCloseable implements Statement {
 
@@ -16,9 +17,16 @@ abstract class AndroidSQLiteStatement extends AbstractCloseable implements State
         this.query = query;
     }
 
-    final void checkActiveTransaction(Transaction transaction) {
+    void checkActiveDatabase(ReadonlyDatabase database) {
+        if (!(database instanceof AndroidSQLiteAbstractDatabase))
+            throw new DatabaseException("Expecting Android SQLite database");
+
+        ((AndroidSQLiteAbstractDatabase) database).checkActive();
+    }
+
+    void checkActiveTransaction(Transaction transaction) {
         if (!(transaction instanceof AndroidSQLiteTransaction))
-            throw new DatabaseException("Expecting " + AndroidSQLiteTransaction.class + " not " + transaction.getClass());
+            throw new DatabaseException("Expecting Android SQLite transaction");
 
         ((AndroidSQLiteTransaction) transaction).checkActive();
     }

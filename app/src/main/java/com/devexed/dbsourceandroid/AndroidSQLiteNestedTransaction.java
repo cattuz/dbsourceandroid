@@ -18,10 +18,7 @@ final class AndroidSQLiteNestedTransaction extends AndroidSQLiteTransaction {
 
     AndroidSQLiteNestedTransaction(AndroidSQLiteTransaction parent) {
         super(parent);
-    }
 
-    @Override
-    void beginTransaction() {
         try {
             connection.execSQL("SAVEPOINT android_sqlite_transaction");
         } catch (SQLException e) {

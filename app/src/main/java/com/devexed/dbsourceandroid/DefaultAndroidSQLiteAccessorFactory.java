@@ -3,6 +3,7 @@ package com.devexed.dbsourceandroid;
 import android.database.Cursor;
 import android.database.SQLException;
 
+import com.devexed.dbsource.AccessorFactory;
 import com.devexed.dbsource.DatabaseException;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +19,8 @@ import java.util.Map;
 /**
  * An accessor factory that matches the default JDBC accessor factory.
  */
-public final class DefaultAndroidSQLiteAccessorFactory implements AndroidSQLiteAccessorFactory {
+public final class DefaultAndroidSQLiteAccessorFactory implements
+        AccessorFactory<SQLiteBindable, Cursor, SQLException> {
 
     /**
      * Definitions for core java accessors that have a corresponding SQLite setter and getter.
@@ -315,6 +317,7 @@ public final class DefaultAndroidSQLiteAccessorFactory implements AndroidSQLiteA
         });
     }};
 
+    @Override
     public AndroidSQLiteAccessor create(Class<?> type) {
         return accessors.get(type);
     }

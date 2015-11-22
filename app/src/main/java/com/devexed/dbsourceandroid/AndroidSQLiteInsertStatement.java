@@ -3,18 +3,23 @@ package com.devexed.dbsourceandroid;
 import android.database.SQLException;
 
 import com.devexed.dbsource.Cursor;
-import com.devexed.dbsource.Cursors;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.EmptyCursor;
 import com.devexed.dbsource.InsertStatement;
 import com.devexed.dbsource.Query;
+import com.devexed.dbsource.QueryStatement;
 import com.devexed.dbsource.Transaction;
+import com.devexed.dbsource.util.CloseableCursor;
+import com.devexed.dbsource.util.CloseableManager;
+import com.devexed.dbsource.util.Cursors;
 
 import java.util.Map;
 
 final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement implements InsertStatement {
 
-    final String key;
+    private final String key;
+    private final CloseableManager<CloseableCursor> cursorManager =
+            new CloseableManager<CloseableCursor>(QueryStatement.class, Cursor.class);
 
     public AndroidSQLiteInsertStatement(AndroidSQLiteAbstractDatabase database, Query query, Map<String, Class<?>> keys) {
         super(database, query, keys);
@@ -39,7 +44,7 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
 
             if (generatedKey < 0) return EmptyCursor.of();
 
-            return Cursors.singleton(new Cursors.ColumnFunction() {
+            return cursorManager.open(Cursors.singleton(new Cursors.ColumnFunction() {
                 @Override
                 @SuppressWarnings("unchecked")
                 public <E> E get(String column) {
@@ -47,10 +52,21 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
 
                     return (E) (Long) generatedKey;
                 }
-            });
+            }));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public void close(Cursor cursor) {
+        cursorManager.close(cursor);
+    }
+
+    @Override
+    public void close() {
+        cursorManager.close();
+        super.close();
     }
 
 }

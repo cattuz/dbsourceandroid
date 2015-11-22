@@ -1,8 +1,10 @@
 package com.devexed.dbsourceandroid;
 
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteStatement;
 
+import com.devexed.dbsource.Accessor;
 import com.devexed.dbsource.DatabaseException;
 import com.devexed.dbsource.Query;
 
@@ -51,7 +53,7 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
             Class<?> type = query.typeOf(parameter);
             if (type == null) throw new DatabaseException("No type is defined for parameter " + parameter);
 
-            AndroidSQLiteAccessor accessor = database.accessorFactory.create(type);
+            Accessor<SQLiteBindable, Cursor, SQLException> accessor = database.accessorFactory.create(type);
             if (accessor == null) throw new DatabaseException("No accessor is defined for parameter " + parameter);
 
             ArrayList<Integer> indexes = parameterIndexes.get(parameter);
@@ -65,7 +67,7 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
 
     @Override
     @SuppressWarnings("TryWithIdenticalCatches")
-    public final void close() {
+    public void close() {
         super.close();
 
         try {
