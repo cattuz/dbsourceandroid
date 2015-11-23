@@ -1,4 +1,4 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteCursor;
@@ -6,32 +6,34 @@ import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
 
-import com.devexed.dbsource.Accessor;
-import com.devexed.dbsource.Cursor;
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.Query;
-import com.devexed.dbsource.QueryStatement;
-import com.devexed.dbsource.ReadonlyDatabase;
-import com.devexed.dbsource.util.CloseableManager;
+import com.devexed.dalwit.Accessor;
+import com.devexed.dalwit.Cursor;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.Query;
+import com.devexed.dalwit.QueryStatement;
+import com.devexed.dalwit.ReadonlyDatabase;
+import com.devexed.dalwit.util.CloseableManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implements QueryStatement {
 
     private final String queryString;
     private final HashMap<String, Binding> parameterBindings;
-    private final HashMap<String, ArrayList<Integer>> parameterIndexes;
+    private final HashMap<String, List<Integer>> parameterIndexes;
+    private final HashMap<Integer, String> indexParameters;
     private final SQLiteDatabase.CursorFactory cursorFactory;
     private final CloseableManager<AndroidSQLiteCursor> cursorManager =
             new CloseableManager<AndroidSQLiteCursor>(QueryStatement.class, Cursor.class);
 
     public AndroidSQLiteQueryStatement(AndroidSQLiteAbstractDatabase database, Query query) {
         super(database, query);
-        parameterIndexes = new HashMap<String, ArrayList<Integer>>();
+        parameterIndexes = new HashMap<String, List<Integer>>();
+        indexParameters = new HashMap<Integer, String>();
         parameterBindings = new HashMap<String, Binding>();
-        queryString = query.create(database, parameterIndexes);
+        queryString = query.create(database, parameterIndexes, indexParameters);
         cursorFactory = new SQLiteDatabase.CursorFactory() {
 
             @Override
@@ -67,10 +69,10 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
         Class<?> type = query.typeOf(parameter);
         if (type == null) throw new DatabaseException("No type is defined for parameter " + parameter);
 
-        Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor = database.accessorFactory.create(type);
+        Accessor<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessor = database.accessorFactory.create(type);
         if (accessor == null) throw new DatabaseException("No accessor is defined for parameter " + parameter);
 
-        ArrayList<Integer> indexes = parameterIndexes.get(parameter);
+        List<Integer> indexes = parameterIndexes.get(parameter);
         if (indexes == null) throw new DatabaseException("Undefined parameter " + parameter);
 
         Binding binding = new Binding(value, accessor, indexes);
@@ -110,11 +112,12 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
 
     private static final class Binding {
         final Object value;
-        final Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor;
-        final ArrayList<Integer> indexes;
+        final Accessor<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessor;
+        final List<Integer> indexes;
 
-        Binding(Object value, Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor,
-                ArrayList<Integer> indexes) {
+        Binding(Object value,
+                Accessor<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessor,
+                List<Integer> indexes) {
             this.value = value;
             this.accessor = accessor;
             this.indexes = indexes;

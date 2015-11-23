@@ -1,9 +1,9 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.devexed.dbsource.DatabaseException;
+import com.devexed.dalwit.DatabaseException;
 
 /**
  * A nested transaction.

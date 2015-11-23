@@ -1,11 +1,11 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.Query;
-import com.devexed.dbsource.ReadonlyDatabase;
-import com.devexed.dbsource.Statement;
-import com.devexed.dbsource.Transaction;
-import com.devexed.dbsource.util.AbstractCloseable;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.Query;
+import com.devexed.dalwit.ReadonlyDatabase;
+import com.devexed.dalwit.Statement;
+import com.devexed.dalwit.Transaction;
+import com.devexed.dalwit.util.AbstractCloseable;
 
 abstract class AndroidSQLiteStatement extends AbstractCloseable implements Statement {
 

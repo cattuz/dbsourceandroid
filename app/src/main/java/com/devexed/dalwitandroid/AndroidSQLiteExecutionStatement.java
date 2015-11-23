@@ -1,11 +1,11 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.ExecutionStatement;
-import com.devexed.dbsource.Query;
-import com.devexed.dbsource.Transaction;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.ExecutionStatement;
+import com.devexed.dalwit.Query;
+import com.devexed.dalwit.Transaction;
 
 final class AndroidSQLiteExecutionStatement extends AndroidSQLiteStatementStatement implements ExecutionStatement {
 

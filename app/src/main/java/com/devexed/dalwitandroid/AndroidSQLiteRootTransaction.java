@@ -1,8 +1,8 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 
-import com.devexed.dbsource.DatabaseException;
+import com.devexed.dalwit.DatabaseException;
 
 final class AndroidSQLiteRootTransaction extends AndroidSQLiteTransaction {
 

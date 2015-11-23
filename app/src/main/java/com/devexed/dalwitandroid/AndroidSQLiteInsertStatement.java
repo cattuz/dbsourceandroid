@@ -1,17 +1,16 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 
-import com.devexed.dbsource.Cursor;
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.EmptyCursor;
-import com.devexed.dbsource.InsertStatement;
-import com.devexed.dbsource.Query;
-import com.devexed.dbsource.QueryStatement;
-import com.devexed.dbsource.Transaction;
-import com.devexed.dbsource.util.CloseableCursor;
-import com.devexed.dbsource.util.CloseableManager;
-import com.devexed.dbsource.util.Cursors;
+import com.devexed.dalwit.Cursor;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.InsertStatement;
+import com.devexed.dalwit.Query;
+import com.devexed.dalwit.QueryStatement;
+import com.devexed.dalwit.Transaction;
+import com.devexed.dalwit.util.CloseableCursor;
+import com.devexed.dalwit.util.CloseableManager;
+import com.devexed.dalwit.util.Cursors;
 
 import java.util.Map;
 
@@ -42,7 +41,7 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
             // Select last inserted id as key.
             final long generatedKey = statement.executeInsert();
 
-            if (generatedKey < 0) return EmptyCursor.of();
+            if (generatedKey < 0) return Cursors.empty();
 
             return cursorManager.open(Cursors.singleton(new Cursors.ColumnFunction() {
                 @Override

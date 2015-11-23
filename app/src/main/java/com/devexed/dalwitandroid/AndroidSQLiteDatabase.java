@@ -1,17 +1,17 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.devexed.dbsource.AccessorFactory;
-import com.devexed.dbsource.Database;
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.Transaction;
+import com.devexed.dalwit.AccessorFactory;
+import com.devexed.dalwit.Database;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.Transaction;
 
 final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 
-    AndroidSQLiteDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory) {
+    AndroidSQLiteDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
         super(Database.class, connection, accessorFactory);
     }
 

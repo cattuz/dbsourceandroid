@@ -1,6 +1,6 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
-import com.devexed.dbsource.Transaction;
+import com.devexed.dalwit.Transaction;
 
 abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase implements Transaction {
 

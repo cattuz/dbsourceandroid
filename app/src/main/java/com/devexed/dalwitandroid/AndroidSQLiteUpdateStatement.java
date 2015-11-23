@@ -1,11 +1,11 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.Query;
-import com.devexed.dbsource.Transaction;
-import com.devexed.dbsource.UpdateStatement;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.Query;
+import com.devexed.dalwit.Transaction;
+import com.devexed.dalwit.UpdateStatement;
 
 final class AndroidSQLiteUpdateStatement extends AndroidSQLiteStatementStatement implements UpdateStatement {
 

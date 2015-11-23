@@ -1,29 +1,29 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.devexed.dbsource.AccessorFactory;
-import com.devexed.dbsource.Connection;
-import com.devexed.dbsource.Database;
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.ExecutionStatement;
-import com.devexed.dbsource.InsertStatement;
-import com.devexed.dbsource.Query;
-import com.devexed.dbsource.QueryStatement;
-import com.devexed.dbsource.Statement;
-import com.devexed.dbsource.Transaction;
-import com.devexed.dbsource.UpdateStatement;
-import com.devexed.dbsource.util.AbstractCloseable;
-import com.devexed.dbsource.util.CloseableManager;
+import com.devexed.dalwit.AccessorFactory;
+import com.devexed.dalwit.Connection;
+import com.devexed.dalwit.Database;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.ExecutionStatement;
+import com.devexed.dalwit.InsertStatement;
+import com.devexed.dalwit.Query;
+import com.devexed.dalwit.QueryStatement;
+import com.devexed.dalwit.Statement;
+import com.devexed.dalwit.Transaction;
+import com.devexed.dalwit.UpdateStatement;
+import com.devexed.dalwit.util.AbstractCloseable;
+import com.devexed.dalwit.util.CloseableManager;
 
 import java.util.Map;
 
 abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implements Database {
 
     final SQLiteDatabase connection;
-    final AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory;
+    final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
 
     private final Class<?> managerType;
     private final CloseableManager<AndroidSQLiteStatement> statementManager;
@@ -31,7 +31,7 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(Class<?> managerType, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory) {
+    AndroidSQLiteAbstractDatabase(Class<?> managerType, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
         this.managerType = managerType;
         this.statementManager = new CloseableManager<AndroidSQLiteStatement>(Connection.class, managerType);
         this.connection = connection;

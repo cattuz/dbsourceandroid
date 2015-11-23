@@ -1,20 +1,20 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 
-import com.devexed.dbsource.Accessor;
-import com.devexed.dbsource.AccessorFactory;
-import com.devexed.dbsource.Cursor;
-import com.devexed.dbsource.DatabaseException;
-import com.devexed.dbsource.util.AbstractCloseable;
+import com.devexed.dalwit.Accessor;
+import com.devexed.dalwit.AccessorFactory;
+import com.devexed.dalwit.Cursor;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.util.AbstractCloseable;
 
 final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
-    private final AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
+    private final AccessorFactory<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessorFactory;
     private final TypeFunction typeOfFunction;
     private final android.database.Cursor cursor;
 
-    AndroidSQLiteCursor(android.database.Cursor cursor, AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory,
+    AndroidSQLiteCursor(android.database.Cursor cursor, AccessorFactory<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessorFactory,
                         TypeFunction typeOfFunction) {
         this.cursor = cursor;
         this.accessorFactory = accessorFactory;
@@ -60,7 +60,7 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
             Class<?> type = typeOfFunction.typeOf(column);
             if (type == null) throw new DatabaseException("No such column " + column);
 
-            Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor = accessorFactory.create(type);
+            Accessor<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessor = accessorFactory.create(type);
             int index = cursor.getColumnIndexOrThrow(column);
 
             return (T) accessor.get(cursor, index);

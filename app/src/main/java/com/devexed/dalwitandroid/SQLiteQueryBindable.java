@@ -1,4 +1,4 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 import android.database.sqlite.SQLiteQuery;
 

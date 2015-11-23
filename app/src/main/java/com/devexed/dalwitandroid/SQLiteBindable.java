@@ -1,4 +1,4 @@
-package com.devexed.dbsourceandroid;
+package com.devexed.dalwitandroid;
 
 /**
  * Wrapper around bindable Android types required as {@link android.database.sqlite.SQLiteStatement} and

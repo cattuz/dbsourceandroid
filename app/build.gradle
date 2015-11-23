@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.devexed.dbsource:DBSource:0.1'
+    compile 'com.devexed.dalwit:dalwit:0.2'
 }
 
 task sourceJar(type: Jar) {
@@ -39,8 +39,8 @@ task testJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId 'com.devexed.dbsourceandroid'
-            artifactId 'DBSourceAndroid'
+            groupId 'com.devexed.dalwitandroid'
+            artifactId 'dalwit-android'
             version '0.1'
             artifact(sourceJar)
             artifact(testJar)
