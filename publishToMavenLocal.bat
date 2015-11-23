@@ -1,0 +1,1 @@
+gradle assembleRelease publishToMavenLocal
