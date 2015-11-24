@@ -3,18 +3,7 @@ package com.devexed.dalwitandroid;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.devexed.dalwit.AccessorFactory;
-import com.devexed.dalwit.Connection;
-import com.devexed.dalwit.Database;
-import com.devexed.dalwit.DatabaseException;
-import com.devexed.dalwit.ExecutionStatement;
-import com.devexed.dalwit.InsertStatement;
-import com.devexed.dalwit.Query;
-import com.devexed.dalwit.QueryStatement;
-import com.devexed.dalwit.Statement;
-import com.devexed.dalwit.Transaction;
-import com.devexed.dalwit.UpdateStatement;
+import com.devexed.dalwit.*;
 import com.devexed.dalwit.util.AbstractCloseable;
 import com.devexed.dalwit.util.CloseableManager;
 
@@ -24,16 +13,16 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
 
     final SQLiteDatabase connection;
     final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
+    final CloseableManager<AndroidSQLiteStatement> statementManager;
 
     private final Class<?> managerType;
-    private final CloseableManager<AndroidSQLiteStatement> statementManager;
 
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(Class<?> managerType, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
+    AndroidSQLiteAbstractDatabase(Class<?> managerType, CloseableManager<AndroidSQLiteStatement> statementManager, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
         this.managerType = managerType;
-        this.statementManager = new CloseableManager<AndroidSQLiteStatement>(Connection.class, managerType);
+        this.statementManager = statementManager;
         this.connection = connection;
         this.accessorFactory = accessorFactory;
     }
@@ -125,28 +114,28 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     public QueryStatement createQuery(Query query) {
         checkNotClosed();
 
-        return new AndroidSQLiteQueryStatement(this, query);
+        return statementManager.open(new AndroidSQLiteQueryStatement(this, query));
     }
 
     @Override
     public UpdateStatement createUpdate(Query query) {
         checkNotClosed();
 
-        return new AndroidSQLiteUpdateStatement(this, query);
+        return statementManager.open(new AndroidSQLiteUpdateStatement(this, query));
     }
 
     @Override
     public ExecutionStatement createExecution(Query query) {
         checkNotClosed();
 
-        return new AndroidSQLiteExecutionStatement(this, query);
+        return statementManager.open(new AndroidSQLiteExecutionStatement(this, query));
     }
 
     @Override
     public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
         checkNotClosed();
 
-        return new AndroidSQLiteInsertStatement(this, query, keys);
+        return statementManager.open(new AndroidSQLiteInsertStatement(this, query, keys));
     }
 
     @Override
