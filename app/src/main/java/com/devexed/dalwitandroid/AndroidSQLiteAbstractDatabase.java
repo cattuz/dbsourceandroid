@@ -5,7 +5,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.*;
 import com.devexed.dalwit.util.AbstractCloseable;
-import com.devexed.dalwit.util.CloseableManager;
+import com.devexed.dalwit.util.AbstractCloseableCloser;
 
 import java.util.Map;
 
@@ -13,14 +13,14 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
 
     final SQLiteDatabase connection;
     final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
-    final CloseableManager<AndroidSQLiteStatement> statementManager;
+    final AbstractCloseableCloser<Statement, AndroidSQLiteStatement> statementManager;
 
     private final Class<?> managerType;
 
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(Class<?> managerType, CloseableManager<AndroidSQLiteStatement> statementManager, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
+    AndroidSQLiteAbstractDatabase(Class<?> managerType, AbstractCloseableCloser<Statement, AndroidSQLiteStatement> statementManager, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
         this.managerType = managerType;
         this.statementManager = statementManager;
         this.connection = connection;

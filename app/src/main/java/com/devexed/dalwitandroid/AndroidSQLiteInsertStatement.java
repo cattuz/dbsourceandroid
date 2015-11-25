@@ -1,15 +1,9 @@
 package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
-
-import com.devexed.dalwit.Cursor;
-import com.devexed.dalwit.DatabaseException;
-import com.devexed.dalwit.InsertStatement;
-import com.devexed.dalwit.Query;
-import com.devexed.dalwit.QueryStatement;
-import com.devexed.dalwit.Transaction;
+import com.devexed.dalwit.*;
+import com.devexed.dalwit.util.AbstractCloseableCloser;
 import com.devexed.dalwit.util.CloseableCursor;
-import com.devexed.dalwit.util.CloseableManager;
 import com.devexed.dalwit.util.Cursors;
 
 import java.util.Map;
@@ -17,8 +11,8 @@ import java.util.Map;
 final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement implements InsertStatement {
 
     private final String key;
-    private final CloseableManager<CloseableCursor> cursorManager =
-            new CloseableManager<CloseableCursor>(QueryStatement.class, Cursor.class);
+    private final AbstractCloseableCloser<Cursor, CloseableCursor> cursorManager =
+            new AbstractCloseableCloser<Cursor, CloseableCursor>(QueryStatement.class, Cursor.class);
 
     public AndroidSQLiteInsertStatement(AndroidSQLiteAbstractDatabase database, Query query, Map<String, Class<?>> keys) {
         super(database, query, keys);

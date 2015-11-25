@@ -1,18 +1,13 @@
 package com.devexed.dalwitandroid;
 
+import android.annotation.SuppressLint;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
-
-import com.devexed.dalwit.Accessor;
-import com.devexed.dalwit.Cursor;
-import com.devexed.dalwit.DatabaseException;
-import com.devexed.dalwit.Query;
-import com.devexed.dalwit.QueryStatement;
-import com.devexed.dalwit.ReadonlyDatabase;
-import com.devexed.dalwit.util.CloseableManager;
+import com.devexed.dalwit.*;
+import com.devexed.dalwit.util.AbstractCloseableCloser;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,9 +20,10 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
     private final HashMap<String, List<Integer>> parameterIndexes;
     private final HashMap<Integer, String> indexParameters;
     private final SQLiteDatabase.CursorFactory cursorFactory;
-    private final CloseableManager<AndroidSQLiteCursor> cursorManager =
-            new CloseableManager<AndroidSQLiteCursor>(QueryStatement.class, Cursor.class);
+    private final AbstractCloseableCloser<Cursor, AndroidSQLiteCursor> cursorManager =
+            new AbstractCloseableCloser<Cursor, AndroidSQLiteCursor>(QueryStatement.class, Cursor.class);
 
+    @SuppressLint("UseSparseArrays")
     public AndroidSQLiteQueryStatement(AndroidSQLiteAbstractDatabase database, Query query) {
         super(database, query);
         parameterIndexes = new HashMap<String, List<Integer>>();

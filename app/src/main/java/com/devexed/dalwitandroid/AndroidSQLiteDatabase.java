@@ -4,13 +4,13 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.*;
-import com.devexed.dalwit.util.CloseableManager;
+import com.devexed.dalwit.util.AbstractCloseableCloser;
 
 final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 
     AndroidSQLiteDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer,
             SQLException> accessorFactory) {
-        super(Database.class, new CloseableManager<AndroidSQLiteStatement>(Database.class, Statement.class), connection,
+        super(Database.class, new AbstractCloseableCloser<Statement, AndroidSQLiteStatement>(Database.class, Statement.class), connection,
                 accessorFactory);
     }
 
