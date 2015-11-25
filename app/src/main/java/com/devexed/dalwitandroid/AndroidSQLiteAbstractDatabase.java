@@ -32,6 +32,12 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
         }
     }
 
+    @Override
+    public void close() {
+        if (child != null) closeChildTransaction(child);
+        super.close();
+    }
+
     /**
      * Check if this transaction has an open child transaction.
      */

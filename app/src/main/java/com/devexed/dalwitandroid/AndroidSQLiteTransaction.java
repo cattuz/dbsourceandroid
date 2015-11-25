@@ -57,8 +57,8 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
             }
         }
 
-        super.close();
         parent.closeChildTransaction(this);
+        super.close();
     }
 
 }
