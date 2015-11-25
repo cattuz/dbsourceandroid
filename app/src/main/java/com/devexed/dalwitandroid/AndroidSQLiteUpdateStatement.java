@@ -1,10 +1,8 @@
 package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
-
 import com.devexed.dalwit.DatabaseException;
 import com.devexed.dalwit.Query;
-import com.devexed.dalwit.Transaction;
 import com.devexed.dalwit.UpdateStatement;
 
 final class AndroidSQLiteUpdateStatement extends AndroidSQLiteStatementStatement implements UpdateStatement {
@@ -14,9 +12,8 @@ final class AndroidSQLiteUpdateStatement extends AndroidSQLiteStatementStatement
     }
 
     @Override
-    public long update(Transaction transaction) {
+    public long update() {
         checkNotClosed();
-        checkActiveTransaction(transaction);
 
         try {
             return statement.executeUpdateDelete();

@@ -1,9 +1,10 @@
 package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
-import com.devexed.dalwit.*;
-import com.devexed.dalwit.util.AbstractCloseableCloser;
-import com.devexed.dalwit.util.CloseableCursor;
+import com.devexed.dalwit.Cursor;
+import com.devexed.dalwit.DatabaseException;
+import com.devexed.dalwit.InsertStatement;
+import com.devexed.dalwit.Query;
 import com.devexed.dalwit.util.Cursors;
 
 import java.util.Map;
@@ -11,8 +12,6 @@ import java.util.Map;
 final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement implements InsertStatement {
 
     private final String key;
-    private final AbstractCloseableCloser<Cursor, CloseableCursor> cursorManager =
-            new AbstractCloseableCloser<Cursor, CloseableCursor>(QueryStatement.class, Cursor.class);
 
     public AndroidSQLiteInsertStatement(AndroidSQLiteAbstractDatabase database, Query query, Map<String, Class<?>> keys) {
         super(database, query, keys);
@@ -27,9 +26,8 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
     }
 
     @Override
-    public Cursor insert(Transaction transaction) {
+    public Cursor insert() {
         checkNotClosed();
-        checkActiveTransaction(transaction);
 
         try {
             // Select last inserted id as key.
@@ -37,7 +35,7 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
 
             if (generatedKey < 0) return Cursors.empty();
 
-            return cursorManager.open(Cursors.singleton(new Cursors.ColumnFunction() {
+            return Cursors.singleton(new Cursors.ColumnFunction() {
                 @Override
                 @SuppressWarnings("unchecked")
                 public <E> E get(String column) {
@@ -45,21 +43,10 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
 
                     return (E) (Long) generatedKey;
                 }
-            }));
+            });
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-    }
-
-    @Override
-    public void close(Cursor cursor) {
-        cursorManager.close(cursor);
-    }
-
-    @Override
-    public void close() {
-        cursorManager.close();
-        super.close();
     }
 
 }

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
 import com.devexed.dalwit.*;
-import com.devexed.dalwit.util.AbstractCloseableCloser;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,8 +19,6 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
     private final HashMap<String, List<Integer>> parameterIndexes;
     private final HashMap<Integer, String> indexParameters;
     private final SQLiteDatabase.CursorFactory cursorFactory;
-    private final AbstractCloseableCloser<Cursor, AndroidSQLiteCursor> cursorManager =
-            new AbstractCloseableCloser<Cursor, AndroidSQLiteCursor>(QueryStatement.class, Cursor.class);
 
     @SuppressLint("UseSparseArrays")
     public AndroidSQLiteQueryStatement(AndroidSQLiteAbstractDatabase database, Query query) {
@@ -76,34 +73,22 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
     }
 
     @Override
-    public Cursor query(ReadonlyDatabase database) {
+    public Cursor query() {
         checkNotClosed();
-        checkActiveDatabase(database);
 
         try {
-            return cursorManager.open(new AndroidSQLiteCursor(
-                    this.database.connection.rawQueryWithFactory(cursorFactory, queryString, new String[0], null),
-                    this.database.accessorFactory,
+            return new AndroidSQLiteCursor(
+                    database.connection.rawQueryWithFactory(cursorFactory, queryString, new String[0], null),
+                    database.accessorFactory,
                     new AndroidSQLiteCursor.TypeFunction() {
                 @Override
                 public Class<?> typeOf(String column) {
                     return query.typeOf(column);
                 }
-                    }));
+                    });
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-    }
-
-    @Override
-    public void close(Cursor cursor) {
-        cursorManager.close(cursor);
-    }
-
-    @Override
-    public void close() {
-        cursorManager.close();
-        super.close();
     }
 
     private static final class Binding {

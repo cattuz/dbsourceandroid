@@ -1,14 +1,13 @@
 package com.devexed.dalwitandroid;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteStatement;
-
 import com.devexed.dalwit.Accessor;
 import com.devexed.dalwit.DatabaseException;
 import com.devexed.dalwit.Query;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
     private final HashMap<String, List<Integer>> parameterIndexes;
     private final HashMap<Integer, String> indexParameters;
 
+    @SuppressLint("UseSparseArrays")
     public AndroidSQLiteStatementStatement(AndroidSQLiteAbstractDatabase database, Query query, Map<String, Class<?>> keys) {
         super(database, query);
 
@@ -69,7 +69,6 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
     }
 
     @Override
-    @SuppressWarnings("TryWithIdenticalCatches")
     public void close() {
         super.close();
 

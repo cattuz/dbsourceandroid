@@ -5,7 +5,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.*;
 import com.devexed.dalwit.util.AbstractCloseable;
-import com.devexed.dalwit.util.AbstractCloseableCloser;
 
 import java.util.Map;
 
@@ -13,18 +12,24 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
 
     final SQLiteDatabase connection;
     final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
-    final AbstractCloseableCloser<Statement, AndroidSQLiteStatement> statementManager;
 
-    private final Class<?> managerType;
-
+    private final String managerType;
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(Class<?> managerType, AbstractCloseableCloser<Statement, AndroidSQLiteStatement> statementManager, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
+    AndroidSQLiteAbstractDatabase(String managerType, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
         this.managerType = managerType;
-        this.statementManager = statementManager;
         this.connection = connection;
         this.accessorFactory = accessorFactory;
+    }
+
+    @Override
+    protected final boolean isClosed() {
+        try {
+            return super.isClosed() || !connection.isOpen();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     /**
@@ -35,7 +40,7 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
         checkNotClosed();
     }
 
-    final AndroidSQLiteTransaction openTransaction(AndroidSQLiteTransaction child) {
+    final AndroidSQLiteTransaction openChildTransaction(AndroidSQLiteTransaction child) {
         checkActive();
         this.child = child;
         return child;
@@ -44,40 +49,18 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     /**
      * Check if this transaction has an open child transaction.
      */
-    final void checkTransaction(Transaction transaction) {
+    final void checkChildTransaction(Transaction transaction) {
         if (transaction == null) throw new NullPointerException("Child transaction is null");
 
         if (transaction != child)
             throw new DatabaseException("Child transaction was not started by this " + managerType);
     }
 
-    @Override
-    public void commit(Transaction transaction) {
-        checkTransaction(transaction);
-        child.checkActive();
-
-        try {
-            child.commitTransaction();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-
-        child.close();
-        child = null;
-    }
-
-    @Override
-    public void rollback(Transaction transaction) {
-        checkTransaction(transaction);
-        child.checkActive();
-
-        try {
-            child.rollbackTransaction();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-
-        child.close();
+    /**
+     * Check if this transaction has an open child transaction.
+     */
+    final void closeChildTransaction(Transaction transaction) {
+        checkChildTransaction(transaction);
         child = null;
     }
 
@@ -113,40 +96,25 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     @Override
     public QueryStatement createQuery(Query query) {
         checkNotClosed();
-
-        return statementManager.open(new AndroidSQLiteQueryStatement(this, query));
+        return new AndroidSQLiteQueryStatement(this, query);
     }
 
     @Override
     public UpdateStatement createUpdate(Query query) {
         checkNotClosed();
-
-        return statementManager.open(new AndroidSQLiteUpdateStatement(this, query));
+        return new AndroidSQLiteUpdateStatement(this, query);
     }
 
     @Override
     public ExecutionStatement createExecution(Query query) {
         checkNotClosed();
-
-        return statementManager.open(new AndroidSQLiteExecutionStatement(this, query));
+        return new AndroidSQLiteExecutionStatement(this, query);
     }
 
     @Override
     public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
         checkNotClosed();
-
-        return statementManager.open(new AndroidSQLiteInsertStatement(this, query, keys));
-    }
-
-    @Override
-    public void close(Statement statement) {
-        statementManager.close(statement);
-    }
-
-    @Override
-    public void close() {
-        statementManager.close();
-        super.close();
+        return new AndroidSQLiteInsertStatement(this, query, keys);
     }
 
     @Override
