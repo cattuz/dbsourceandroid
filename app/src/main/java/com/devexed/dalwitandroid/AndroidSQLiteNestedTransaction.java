@@ -17,6 +17,8 @@ class AndroidSQLiteNestedTransaction extends AndroidSQLiteTransaction {
 
     // Semi-colons required to circumvent Android guessing the wrong type for the statements and therefore not
     // executing them correctly. Who knows why they choose micromanage statements like that?
+    //
+    // Some discussion here: https://code.google.com/p/android/issues/detail?id=38706
     private static final String savepointCreate = ";SAVEPOINT android_sqlite_transaction";
     private static final String savepointRelease = ";RELEASE SAVEPOINT android_sqlite_transaction";
     private static final String savepointRollback = ";ROLLBACK TO SAVEPOINT android_sqlite_transaction";
