@@ -14,6 +14,7 @@ final class AndroidSQLiteUpdateStatement extends AndroidSQLiteStatementStatement
     @Override
     public long update() {
         checkNotClosed();
+        database.checkActive();
 
         try {
             return statement.executeUpdateDelete();

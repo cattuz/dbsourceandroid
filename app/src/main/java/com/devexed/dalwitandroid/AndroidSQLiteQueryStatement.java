@@ -75,6 +75,7 @@ final class AndroidSQLiteQueryStatement extends AndroidSQLiteStatement implement
     @Override
     public Cursor query() {
         checkNotClosed();
+        database.checkActive();
 
         try {
             return new AndroidSQLiteCursor(

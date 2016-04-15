@@ -1,7 +1,6 @@
 package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
-
 import com.devexed.dalwit.Accessor;
 import com.devexed.dalwit.AccessorFactory;
 import com.devexed.dalwit.Cursor;
@@ -31,14 +30,10 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
         checkNotClosed();
 
         try {
-            if (cursor.move(rows)) return true;
+            return cursor.move(rows);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-
-        close();
-
-        return false;
     }
 
     @Override
@@ -71,8 +66,6 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
     @Override
     public void close() {
-        if (isClosed()) return;
-
         try {
             cursor.close();
         } catch (SQLException e) {

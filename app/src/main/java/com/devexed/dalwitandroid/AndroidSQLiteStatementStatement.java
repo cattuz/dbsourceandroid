@@ -10,7 +10,6 @@ import com.devexed.dalwit.Query;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
 
@@ -21,7 +20,7 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
     private final HashMap<Integer, String> indexParameters;
 
     @SuppressLint("UseSparseArrays")
-    public AndroidSQLiteStatementStatement(AndroidSQLiteAbstractDatabase database, Query query, Map<String, Class<?>> keys) {
+    public AndroidSQLiteStatementStatement(AndroidSQLiteAbstractDatabase database, Query query) {
         super(database, query);
 
         parameterIndexes = new HashMap<String, List<Integer>>();
@@ -33,10 +32,6 @@ abstract class AndroidSQLiteStatementStatement extends AndroidSQLiteStatement {
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-    }
-
-    public AndroidSQLiteStatementStatement(AndroidSQLiteAbstractDatabase database, Query query) {
-        this(database, query, null);
     }
 
     @Override

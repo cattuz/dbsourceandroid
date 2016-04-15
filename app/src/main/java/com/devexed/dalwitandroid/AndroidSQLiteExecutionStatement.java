@@ -14,6 +14,7 @@ final class AndroidSQLiteExecutionStatement extends AndroidSQLiteStatementStatem
     @Override
     public void execute() {
         checkNotClosed();
+        database.checkActive();
 
         try {
             statement.execute();

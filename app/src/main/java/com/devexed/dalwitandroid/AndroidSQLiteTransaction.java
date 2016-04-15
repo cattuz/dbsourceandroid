@@ -14,8 +14,14 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
      * update the database.
      */
     AndroidSQLiteTransaction(AndroidSQLiteAbstractDatabase parent) {
-        super("transaction", parent.connection, parent.accessorFactory);
+        super(parent.connection, parent.accessorFactory);
         this.parent = parent;
+    }
+
+    @Override
+    void checkActive() {
+        super.checkActive();
+        parent.checkIsChildTransaction(this);
     }
 
     abstract void commitTransaction();
@@ -31,7 +37,6 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
     @Override
     public final void commit() {
         checkActive();
-        parent.checkChildTransaction(this);
 
         try {
             commitTransaction();
@@ -43,11 +48,8 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
     }
 
     @Override
-    public final void close() {
-        if (isClosed()) return;
-
+    final void closeResource() {
         checkActive();
-        parent.checkChildTransaction(this);
 
         if (!committed) {
             try {
@@ -58,7 +60,6 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
         }
 
         parent.closeChildTransaction(this);
-        super.close();
     }
 
 }

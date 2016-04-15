@@ -13,14 +13,16 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     final SQLiteDatabase connection;
     final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
 
-    private final String managerType;
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(String managerType, SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
-        this.managerType = managerType;
+    AndroidSQLiteAbstractDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
         this.connection = connection;
         this.accessorFactory = accessorFactory;
+    }
+
+    public SQLiteDatabase getNativeSQLiteDatabase() {
+        return connection;
     }
 
     @Override
@@ -32,18 +34,25 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
         }
     }
 
+    abstract void closeResource();
+
     @Override
-    public void close() {
-        if (child != null) closeChildTransaction(child);
+    public final void close() {
+        if (child != null) {
+            child.close();
+            child = null;
+        }
+
+        closeResource();
         super.close();
     }
 
     /**
      * Check if this transaction has an open child transaction.
      */
-    final void checkActive() {
-        if (child != null) throw new DatabaseException("Child transaction is still open");
+    void checkActive() {
         checkNotClosed();
+        if (child != null) throw new DatabaseException("Transaction has child transaction open");
     }
 
     final AndroidSQLiteTransaction openChildTransaction(AndroidSQLiteTransaction child) {
@@ -55,18 +64,15 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     /**
      * Check if this transaction has an open child transaction.
      */
-    final void checkChildTransaction(Transaction transaction) {
-        if (transaction == null) throw new NullPointerException("Child transaction is null");
-
-        if (transaction != child)
-            throw new DatabaseException("Child transaction was not started by this " + managerType);
+    final void checkIsChildTransaction(Transaction transaction) {
+        if (transaction != child) throw new DatabaseException("Child transaction not open");
     }
 
     /**
      * Check if this transaction has an open child transaction.
      */
     final void closeChildTransaction(Transaction transaction) {
-        checkChildTransaction(transaction);
+        checkIsChildTransaction(transaction);
         child = null;
     }
 
@@ -101,25 +107,25 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
 
     @Override
     public QueryStatement createQuery(Query query) {
-        checkNotClosed();
+        checkActive();
         return new AndroidSQLiteQueryStatement(this, query);
     }
 
     @Override
     public UpdateStatement createUpdate(Query query) {
-        checkNotClosed();
+        checkActive();
         return new AndroidSQLiteUpdateStatement(this, query);
     }
 
     @Override
     public ExecutionStatement createExecution(Query query) {
-        checkNotClosed();
+        checkActive();
         return new AndroidSQLiteExecutionStatement(this, query);
     }
 
     @Override
     public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
-        checkNotClosed();
+        checkActive();
         return new AndroidSQLiteInsertStatement(this, query, keys);
     }
 

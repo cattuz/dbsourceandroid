@@ -11,24 +11,26 @@ final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 
     AndroidSQLiteDatabase(SQLiteDatabase connection,
                           AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
-        super("database", connection, accessorFactory);
+        super(connection, accessorFactory);
     }
 
     @Override
     public Transaction transact() {
-        checkNotClosed();
+        checkActive();
         return openChildTransaction(new AndroidSQLiteRootTransaction(this));
     }
 
     @Override
-    public void close() {
+    void closeResource() {
+        // Sanity check. Some Android versions will silently keep the SQLite database locked if a transaction is open
+        // when closing the connection.
+        if (connection.inTransaction()) throw new DatabaseException("Cannot close while child transaction is open");
+
         try {
             connection.close();
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-
-        super.close();
     }
 
 }

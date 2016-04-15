@@ -14,7 +14,7 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
     private final String key;
 
     public AndroidSQLiteInsertStatement(AndroidSQLiteAbstractDatabase database, Query query, Map<String, Class<?>> keys) {
-        super(database, query, keys);
+        super(database, query);
 
         if (keys.size() > 1)
             throw new DatabaseException("Only a single generated key column is supported.");
@@ -28,6 +28,7 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
     @Override
     public Cursor insert() {
         checkNotClosed();
+        database.checkActive();
 
         try {
             // Select last inserted id as key.
@@ -35,15 +36,7 @@ final class AndroidSQLiteInsertStatement extends AndroidSQLiteStatementStatement
 
             if (generatedKey < 0) return Cursors.empty();
 
-            return Cursors.singleton(new Cursors.ColumnFunction() {
-                @Override
-                @SuppressWarnings("unchecked")
-                public <E> E get(String column) {
-                    if (!key.equals(column)) throw new DatabaseException("Column must be key column " + key);
-
-                    return (E) (Long) generatedKey;
-                }
-            });
+            return Cursors.singleton(key, generatedKey);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
