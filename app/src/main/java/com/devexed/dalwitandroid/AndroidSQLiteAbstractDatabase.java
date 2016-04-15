@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.*;
 import com.devexed.dalwit.util.AbstractCloseable;
 
-import java.util.Map;
-
 abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implements Database {
 
     final SQLiteDatabase connection;
@@ -109,24 +107,6 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     public QueryStatement createQuery(Query query) {
         checkActive();
         return new AndroidSQLiteQueryStatement(this, query);
-    }
-
-    @Override
-    public UpdateStatement createUpdate(Query query) {
-        checkActive();
-        return new AndroidSQLiteUpdateStatement(this, query);
-    }
-
-    @Override
-    public ExecutionStatement createExecution(Query query) {
-        checkActive();
-        return new AndroidSQLiteExecutionStatement(this, query);
-    }
-
-    @Override
-    public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
-        checkActive();
-        return new AndroidSQLiteInsertStatement(this, query, keys);
     }
 
     @Override

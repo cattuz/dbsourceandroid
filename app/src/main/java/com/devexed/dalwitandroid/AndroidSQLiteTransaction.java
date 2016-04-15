@@ -1,8 +1,9 @@
 package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
-import com.devexed.dalwit.DatabaseException;
-import com.devexed.dalwit.Transaction;
+import com.devexed.dalwit.*;
+
+import java.util.Map;
 
 abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase implements Transaction {
 
@@ -32,6 +33,24 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
     public final Transaction transact() {
         checkActive();
         return openChildTransaction(new AndroidSQLiteNestedTransaction(this));
+    }
+
+    @Override
+    public UpdateStatement createUpdate(Query query) {
+        checkActive();
+        return new AndroidSQLiteUpdateStatement(this, query);
+    }
+
+    @Override
+    public ExecutionStatement createExecution(Query query) {
+        checkActive();
+        return new AndroidSQLiteExecutionStatement(this, query);
+    }
+
+    @Override
+    public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
+        checkActive();
+        return new AndroidSQLiteInsertStatement(this, query, keys);
     }
 
     @Override
