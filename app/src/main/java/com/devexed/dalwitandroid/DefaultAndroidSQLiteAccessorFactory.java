@@ -21,6 +21,19 @@ import java.util.Map;
 public final class DefaultAndroidSQLiteAccessorFactory implements
         AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> {
 
+    private static void checkBlobSize(long size) {
+        if (size > 1024 * 1024)
+            throw new DatabaseException(
+                    "Attempted to bind a blob " + size + " bytes in size. " +
+                    "Android's SQLite driver does not support blobs larger than 1MB.");
+    }
+
+    private static byte[] checkBlob(byte[] blob) {
+        checkBlobSize(blob.length);
+
+        return blob;
+    }
+
     /**
      * Definitions for core java accessors that have a corresponding SQLite setter and getter.
      */
@@ -270,7 +283,7 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
             @Override
             public void set(SQLiteBindable bindable, Integer index, Object value) throws SQLException {
                 if (value == null) bindable.bindNull(index);
-                else bindable.bindBlob(index, (byte[]) value);
+                else bindable.bindBlob(index, checkBlob((byte[]) value));
             }
 
             @Override
@@ -296,16 +309,20 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
                         byte[] buffer = new byte[1024];
                         int bytesRead;
 
-                        while ((bytesRead = is.read(buffer)) != -1) os.write(buffer, 0, bytesRead);
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            os.write(buffer, 0, bytesRead);
+
+                            // Check blob size on each write to fail early rather than after copying the whole stream.
+                            checkBlobSize(os.size());
+                        }
                     } finally {
-                        is.close();
                         os.close();
                     }
                 } catch (IOException e) {
                     throw new DatabaseException("IO exception when writing input stream to blob", e);
                 }
 
-                bindable.bindBlob(index, os.toByteArray());
+                bindable.bindBlob(index, checkBlob(os.toByteArray()));
             }
 
             @Override
