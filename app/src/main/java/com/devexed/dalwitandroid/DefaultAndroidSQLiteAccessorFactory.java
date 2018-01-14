@@ -162,7 +162,7 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
                 else return (byte) cursor.getLong(index);
             }
         });
-        put(Short.class, new AndroidSQLiteAccessor() {
+        put(Short.class , new AndroidSQLiteAccessor() {
             @Override
             public void set(SQLiteBindable bindable, Integer index, Object value) throws SQLException {
                 if (value == null) bindable.bindNull(index);
