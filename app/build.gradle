@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.devexed.dalwit:dalwit:0.2'
+    implementation 'com.devexed.dalwit:dalwit:0.8'
 }
 
 task sourceJar(type: Jar) {
