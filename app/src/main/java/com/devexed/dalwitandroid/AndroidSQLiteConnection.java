@@ -2,7 +2,7 @@ package com.devexed.dalwitandroid;
 
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.AccessorFactory;
 import com.devexed.dalwit.Connection;
 import com.devexed.dalwit.Database;

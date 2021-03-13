@@ -1,8 +1,8 @@
 package com.devexed.dalwitandroid;
 
 /**
- * Wrapper around bindable Android types required as {@link android.database.sqlite.SQLiteStatement} and
- * {@link android.database.sqlite.SQLiteQuery} implement the same bind methods but don't share a common interface.
+ * Wrapper around bindable Android types required as {@link org.sqlite.database.sqlite.SQLiteStatement} and
+ * {@link org.sqlite.database.sqlite.SQLiteQuery} implement the same bind methods but don't share a common interface.
  */
 interface SQLiteBindable {
 

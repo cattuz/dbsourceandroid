@@ -2,11 +2,11 @@ package com.devexed.dalwitandroid;
 
 import android.annotation.SuppressLint;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteCursor;
-import android.database.sqlite.SQLiteCursorDriver;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQuery;
-import android.database.sqlite.SQLiteStatement;
+import org.sqlite.database.sqlite.SQLiteCursor;
+import org.sqlite.database.sqlite.SQLiteCursorDriver;
+import org.sqlite.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteQuery;
+import org.sqlite.database.sqlite.SQLiteStatement;
 import android.util.SparseArray;
 
 import com.devexed.dalwit.Accessor;

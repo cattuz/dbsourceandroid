@@ -1,6 +1,6 @@
 package com.devexed.dalwitandroid;
 
-import android.database.sqlite.SQLiteStatement;
+import org.sqlite.database.sqlite.SQLiteStatement;
 
 final class SQLiteStatementBindable implements SQLiteBindable {
 

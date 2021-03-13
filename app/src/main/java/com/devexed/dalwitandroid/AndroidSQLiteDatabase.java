@@ -1,7 +1,7 @@
 package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.AccessorFactory;
 import com.devexed.dalwit.ColumnNameMapper;
 import com.devexed.dalwit.DatabaseException;
