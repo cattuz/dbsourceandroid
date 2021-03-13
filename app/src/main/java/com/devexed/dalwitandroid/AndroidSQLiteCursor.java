@@ -36,12 +36,24 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
     @Override
     public boolean previous() {
-        return seek(-1);
+        checkNotClosed();
+
+        try {
+            return cursor.moveToPrevious();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public boolean next() {
-        return seek(1);
+        checkNotClosed();
+
+        try {
+            return cursor.moveToNext();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override

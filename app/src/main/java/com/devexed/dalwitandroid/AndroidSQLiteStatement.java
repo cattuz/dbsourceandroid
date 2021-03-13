@@ -78,27 +78,27 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
 
             for (int i = 0, l = storedBindable.nulls.size(); i < l; i++) {
                 int index = storedBindable.nulls.keyAt(i);
-                statement.bindNull(index + 1);
+                statement.bindNull(index);
             }
 
             for (int i = 0, l = storedBindable.longs.size(); i < l; i++) {
                 int index = storedBindable.longs.keyAt(i);
-                statement.bindLong(index + 1, storedBindable.longs.valueAt(i));
+                statement.bindLong(index, storedBindable.longs.valueAt(i));
             }
 
             for (int i = 0, l = storedBindable.doubles.size(); i < l; i++) {
                 int index = storedBindable.doubles.keyAt(i);
-                statement.bindDouble(index + 1, storedBindable.doubles.valueAt(i));
+                statement.bindDouble(index, storedBindable.doubles.valueAt(i));
             }
 
             for (int i = 0, l = storedBindable.strings.size(); i < l; i++) {
                 int index = storedBindable.strings.keyAt(i);
-                statement.bindString(index + 1, storedBindable.strings.valueAt(i));
+                statement.bindString(index, storedBindable.strings.valueAt(i));
             }
 
             for (int i = 0, l = storedBindable.blobs.size(); i < l; i++) {
                 int index = storedBindable.blobs.keyAt(i);
-                statement.bindBlob(index + 1, storedBindable.blobs.valueAt(i));
+                statement.bindBlob(index, storedBindable.blobs.valueAt(i));
             }
 
             // Redirect new bindings directly to the statement
@@ -127,27 +127,27 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
                     // Bind all stored parameter values
                     for (int i = 0, l = storedBindable.nulls.size(); i < l; i++) {
                         int index = storedBindable.nulls.keyAt(i);
-                        sqliteQuery.bindNull(index + 1);
+                        sqliteQuery.bindNull(index);
                     }
 
                     for (int i = 0, l = storedBindable.longs.size(); i < l; i++) {
                         int index = storedBindable.longs.keyAt(i);
-                        sqliteQuery.bindLong(index + 1, storedBindable.longs.valueAt(i));
+                        sqliteQuery.bindLong(index, storedBindable.longs.valueAt(i));
                     }
 
                     for (int i = 0, l = storedBindable.doubles.size(); i < l; i++) {
                         int index = storedBindable.doubles.keyAt(i);
-                        sqliteQuery.bindDouble(index + 1, storedBindable.doubles.valueAt(i));
+                        sqliteQuery.bindDouble(index, storedBindable.doubles.valueAt(i));
                     }
 
                     for (int i = 0, l = storedBindable.strings.size(); i < l; i++) {
                         int index = storedBindable.strings.keyAt(i);
-                        sqliteQuery.bindString(index + 1, storedBindable.strings.valueAt(i));
+                        sqliteQuery.bindString(index, storedBindable.strings.valueAt(i));
                     }
 
                     for (int i = 0, l = storedBindable.blobs.size(); i < l; i++) {
                         int index = storedBindable.blobs.keyAt(i);
-                        sqliteQuery.bindBlob(index + 1, storedBindable.blobs.valueAt(i));
+                        sqliteQuery.bindBlob(index, storedBindable.blobs.valueAt(i));
                     }
 
                     return new SQLiteCursor(masterQuery, editTable, sqliteQuery);
@@ -188,7 +188,7 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
                 @Override
                 public void bind(T value) {
                     try {
-                        for (int index : indexes) accessor.set(bindable, index + 1, value);
+                        for (int index : indexes) accessor.set(bindable, index, value);
                     } catch (SQLException e) {
                         throw new DatabaseException(e);
                     }
@@ -324,27 +324,27 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
 
         @Override
         public void bindNull(int index) {
-            nulls.put(index, null);
+            nulls.put(index + 1, null);
         }
 
         @Override
         public void bindLong(int index, long value) {
-            longs.put(index, value);
+            longs.put(index + 1, value);
         }
 
         @Override
         public void bindString(int index, String value) {
-            strings.put(index, value);
+            strings.put(index + 1, value);
         }
 
         @Override
         public void bindDouble(int index, double value) {
-            doubles.put(index, value);
+            doubles.put(index + 1, value);
         }
 
         @Override
         public void bindBlob(int index, byte[] bytes) {
-            blobs.put(index, bytes);
+            blobs.put(index + 1, bytes);
         }
     }
 
