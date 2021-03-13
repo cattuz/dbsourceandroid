@@ -19,7 +19,7 @@ import java.util.Map;
  * An accessor factory that matches the default JDBC accessor factory.
  */
 public final class DefaultAndroidSQLiteAccessorFactory implements
-        AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> {
+        AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> {
 
     private static void checkBlobSize(long size) {
         if (size > 1024 * 1024)

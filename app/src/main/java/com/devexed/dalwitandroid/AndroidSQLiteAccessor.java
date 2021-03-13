@@ -8,5 +8,5 @@ import com.devexed.dalwit.Accessor;
 /**
  * Accessor to bind values to and retrieve values from Android SQLite interfaces.
  */
-public interface AndroidSQLiteAccessor extends Accessor<SQLiteBindable, Integer, Cursor, Integer, SQLException> {
+public interface AndroidSQLiteAccessor extends Accessor<SQLiteBindable, android.database.Cursor, SQLException> {
 }

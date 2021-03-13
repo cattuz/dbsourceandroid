@@ -14,9 +14,9 @@ import com.devexed.dalwit.ReadonlyDatabase;
 public final class AndroidSQLiteConnection implements Connection {
 
     private final String url;
-    private final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
+    private final AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
 
-    public AndroidSQLiteConnection(String url, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
+    public AndroidSQLiteConnection(String url, AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory) {
         this.url = url;
         this.accessorFactory = accessorFactory;
     }

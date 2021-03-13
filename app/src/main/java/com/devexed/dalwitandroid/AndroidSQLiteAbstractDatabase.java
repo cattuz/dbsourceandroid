@@ -9,18 +9,16 @@ import com.devexed.dalwit.util.AbstractCloseable;
 abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implements Database {
 
     final SQLiteDatabase connection;
-    final AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory;
+    final AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
+    final ColumnNameMapper columnNameMapper;
 
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Integer, Cursor, Integer, SQLException> accessorFactory) {
+    AndroidSQLiteAbstractDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory, ColumnNameMapper columnNameMapper) {
         this.connection = connection;
         this.accessorFactory = accessorFactory;
-    }
-
-    public SQLiteDatabase getNativeSQLiteDatabase() {
-        return connection;
+        this.columnNameMapper = columnNameMapper;
     }
 
     @Override
@@ -74,13 +72,11 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
         child = null;
     }
 
-    @Override
     public String getType() {
         checkNotClosed();
         return "SQLite";
     }
 
-    @Override
     public String getVersion() {
         checkNotClosed();
 
@@ -104,9 +100,9 @@ abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implement
     }
 
     @Override
-    public QueryStatement createQuery(Query query) {
+    public Statement prepare(Query query) {
         checkActive();
-        return new AndroidSQLiteQueryStatement(this, query);
+        return new AndroidSQLiteStatement(this, query);
     }
 
     @Override

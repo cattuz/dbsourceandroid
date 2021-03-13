@@ -2,18 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 11
-        versionCode 2
-        versionName "0.2"
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
+        versionCode 8
+        versionName "0.8"
     }
 }
 
@@ -23,7 +18,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.devexed.dalwit:dalwit:0.8'
+    implementation project(':dalwit-android:sqlite')
+    implementation 'com.devexed.dalwit:dalwit:0.9'
 }
 
 task sourceJar(type: Jar) {
@@ -41,7 +37,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId 'com.devexed.dalwitandroid'
             artifactId 'dalwit-android'
-            version '0.2'
+            version '0.8'
             artifact(sourceJar)
             artifact(testJar)
             artifact("$buildDir/outputs/aar/app-release.aar")

@@ -2,22 +2,20 @@ package com.devexed.dalwitandroid;
 
 import android.database.SQLException;
 import com.devexed.dalwit.Accessor;
-import com.devexed.dalwit.AccessorFactory;
 import com.devexed.dalwit.Cursor;
 import com.devexed.dalwit.DatabaseException;
 import com.devexed.dalwit.util.AbstractCloseable;
 
+import java.util.Map;
+
 final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
-    private final AccessorFactory<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessorFactory;
-    private final TypeFunction typeOfFunction;
     private final android.database.Cursor cursor;
+    private final Map<String, Getter<?>> columns;
 
-    AndroidSQLiteCursor(android.database.Cursor cursor, AccessorFactory<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessorFactory,
-                        TypeFunction typeOfFunction) {
+    AndroidSQLiteCursor(android.database.Cursor cursor, Map<String, Getter<?>> columns) {
         this.cursor = cursor;
-        this.accessorFactory = accessorFactory;
-        this.typeOfFunction = typeOfFunction;
+        this.columns = columns;
     }
 
     @Override
@@ -48,20 +46,8 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(String column) {
-        checkNotClosed();
-
-        try {
-            Class<?> type = typeOfFunction.typeOf(column);
-            if (type == null) throw new DatabaseException("No such column " + column);
-
-            Accessor<SQLiteBindable, Integer, android.database.Cursor, Integer, SQLException> accessor = accessorFactory.create(type);
-            int index = cursor.getColumnIndexOrThrow(column);
-
-            return (T) accessor.get(cursor, index);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+    public <T> Getter<T> getter(final String column) {
+        return (Getter<T>) columns.get(column.toLowerCase());
     }
 
     @Override
@@ -78,6 +64,29 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
     public interface TypeFunction {
 
         Class<?> typeOf(String column);
+
+    }
+
+    static final class SQLiteGetter implements Cursor.Getter<Object> {
+
+        private final Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor;
+        private final android.database.Cursor cursor;
+        private final int index;
+
+        SQLiteGetter(Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor, android.database.Cursor cursor, int index) {
+            this.accessor = accessor;
+            this.cursor = cursor;
+            this.index = index;
+        }
+
+        @Override
+        public Object get() {
+            try {
+                return accessor.get(cursor, index);
+            } catch (SQLException e) {
+                throw new DatabaseException(e);
+            }
+        }
 
     }
 
