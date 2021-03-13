@@ -61,12 +61,6 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
         super.close();
     }
 
-    public interface TypeFunction {
-
-        Class<?> typeOf(String column);
-
-    }
-
     static final class SQLiteGetter implements Cursor.Getter<Object> {
 
         private final Accessor<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessor;

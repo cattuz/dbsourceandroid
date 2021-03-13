@@ -47,9 +47,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor gettable, int index) throws SQLException {
-                if (gettable.isNull(index))
+                if (gettable.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type boolean in result set.");
-                return gettable.getLong(index) != 0;
+                return gettable.getLong(index + 1) != 0;
             }
         });
         put(Byte.TYPE, new AndroidSQLiteAccessor() {
@@ -61,9 +61,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index))
+                if (cursor.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type byte in result set.");
-                return (byte) cursor.getLong(index);
+                return (byte) cursor.getLong(index + 1);
             }
         });
         put(Short.TYPE, new AndroidSQLiteAccessor() {
@@ -75,9 +75,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index))
+                if (cursor.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type short in result set.");
-                return (short) cursor.getLong(index);
+                return (short) cursor.getLong(index + 1);
             }
         });
         put(Integer.TYPE, new AndroidSQLiteAccessor() {
@@ -89,9 +89,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index))
+                if (cursor.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type int in result set.");
-                return (int) cursor.getLong(index);
+                return (int) cursor.getLong(index + 1);
             }
         });
         put(Long.TYPE, new AndroidSQLiteAccessor() {
@@ -103,9 +103,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index))
+                if (cursor.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type long in result set.");
-                return cursor.getLong(index);
+                return cursor.getLong(index + 1);
             }
         });
         put(Float.TYPE, new AndroidSQLiteAccessor() {
@@ -117,9 +117,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index))
+                if (cursor.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type float in result set.");
-                return (float) cursor.getDouble(index);
+                return (float) cursor.getDouble(index + 1);
             }
         });
         put(Double.TYPE, new AndroidSQLiteAccessor() {
@@ -131,9 +131,9 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index))
+                if (cursor.isNull(index + 1))
                     throw new DatabaseException("Illegal null value for type double in result set.");
-                return cursor.getDouble(index);
+                return cursor.getDouble(index + 1);
             }
         });
         put(Boolean.class, new AndroidSQLiteAccessor() {
@@ -145,8 +145,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return cursor.getLong(index) != 0;
+                if (cursor.isNull(index + 1)) return null;
+                else return cursor.getLong(index + 1) != 0;
             }
         });
         put(Byte.class, new AndroidSQLiteAccessor() {
@@ -158,8 +158,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return (byte) cursor.getLong(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return (byte) cursor.getLong(index + 1);
             }
         });
         put(Short.class , new AndroidSQLiteAccessor() {
@@ -171,8 +171,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return (short) cursor.getLong(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return (short) cursor.getLong(index + 1);
             }
         });
         put(Integer.class, new AndroidSQLiteAccessor() {
@@ -184,8 +184,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return (int) cursor.getLong(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return (int) cursor.getLong(index + 1);
             }
         });
         put(Long.class, new AndroidSQLiteAccessor() {
@@ -197,8 +197,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return cursor.getLong(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return cursor.getLong(index + 1);
             }
         });
         put(Float.class, new AndroidSQLiteAccessor() {
@@ -210,21 +210,21 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return (float) cursor.getDouble(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return (float) cursor.getDouble(index + 1);
             }
         });
         put(Double.class, new AndroidSQLiteAccessor() {
             @Override
             public void set(AndroidSQLiteBindable bindable, int index, Object value) throws SQLException {
                 if (value == null) bindable.bindNull(index);
-                else bindable.bindDouble(index, (Double) value);
+                else bindable.bindDouble(index + 1, (Double) value);
             }
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return cursor.getDouble(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return cursor.getDouble(index + 1);
             }
         });
         put(String.class, new AndroidSQLiteAccessor() {
@@ -236,8 +236,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return cursor.getString(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return cursor.getString(index + 1);
             }
         });
         put(Date.class, new AndroidSQLiteAccessor() {
@@ -249,8 +249,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return new Date(cursor.getLong(index));
+                if (cursor.isNull(index + 1)) return null;
+                else return new Date(cursor.getLong(index + 1));
             }
         });
         put(BigInteger.class, new AndroidSQLiteAccessor() {
@@ -262,8 +262,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return new BigInteger(cursor.getString(index));
+                if (cursor.isNull(index + 1)) return null;
+                else return new BigInteger(cursor.getString(index + 1));
             }
         });
         put(BigDecimal.class, new AndroidSQLiteAccessor() {
@@ -275,8 +275,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return new BigDecimal(cursor.getString(index));
+                if (cursor.isNull(index + 1)) return null;
+                else return new BigDecimal(cursor.getString(index + 1));
             }
         });
         put(byte[].class, new AndroidSQLiteAccessor() {
@@ -288,8 +288,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return cursor.getBlob(index);
+                if (cursor.isNull(index + 1)) return null;
+                else return cursor.getBlob(index + 1);
             }
         });
         put(InputStream.class, new AndroidSQLiteAccessor() {
@@ -326,8 +326,8 @@ public final class DefaultAndroidSQLiteAccessorFactory implements
 
             @Override
             public Object get(Cursor cursor, int index) throws SQLException {
-                if (cursor.isNull(index)) return null;
-                else return new ByteArrayInputStream(cursor.getBlob(index));
+                if (cursor.isNull(index + 1)) return null;
+                else return new ByteArrayInputStream(cursor.getBlob(index + 1));
             }
         });
     }};

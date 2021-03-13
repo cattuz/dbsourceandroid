@@ -78,27 +78,27 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
 
             for (int i = 0, l = storedBindable.nulls.size(); i < l; i++) {
                 int index = storedBindable.nulls.keyAt(i);
-                statement.bindNull(index);
+                statement.bindNull(index + 1);
             }
 
             for (int i = 0, l = storedBindable.longs.size(); i < l; i++) {
                 int index = storedBindable.longs.keyAt(i);
-                statement.bindLong(index, storedBindable.longs.valueAt(i));
+                statement.bindLong(index + 1, storedBindable.longs.valueAt(i));
             }
 
             for (int i = 0, l = storedBindable.doubles.size(); i < l; i++) {
                 int index = storedBindable.doubles.keyAt(i);
-                statement.bindDouble(index, storedBindable.doubles.valueAt(i));
+                statement.bindDouble(index + 1, storedBindable.doubles.valueAt(i));
             }
 
             for (int i = 0, l = storedBindable.strings.size(); i < l; i++) {
                 int index = storedBindable.strings.keyAt(i);
-                statement.bindString(index, storedBindable.strings.valueAt(i));
+                statement.bindString(index + 1, storedBindable.strings.valueAt(i));
             }
 
             for (int i = 0, l = storedBindable.blobs.size(); i < l; i++) {
                 int index = storedBindable.blobs.keyAt(i);
-                statement.bindBlob(index, storedBindable.blobs.valueAt(i));
+                statement.bindBlob(index + 1, storedBindable.blobs.valueAt(i));
             }
 
             // Redirect new bindings directly to the statement
@@ -127,27 +127,27 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
                     // Bind all stored parameter values
                     for (int i = 0, l = storedBindable.nulls.size(); i < l; i++) {
                         int index = storedBindable.nulls.keyAt(i);
-                        sqliteQuery.bindNull(index);
+                        sqliteQuery.bindNull(index + 1);
                     }
 
                     for (int i = 0, l = storedBindable.longs.size(); i < l; i++) {
                         int index = storedBindable.longs.keyAt(i);
-                        sqliteQuery.bindLong(index, storedBindable.longs.valueAt(i));
+                        sqliteQuery.bindLong(index + 1, storedBindable.longs.valueAt(i));
                     }
 
                     for (int i = 0, l = storedBindable.doubles.size(); i < l; i++) {
                         int index = storedBindable.doubles.keyAt(i);
-                        sqliteQuery.bindDouble(index, storedBindable.doubles.valueAt(i));
+                        sqliteQuery.bindDouble(index + 1, storedBindable.doubles.valueAt(i));
                     }
 
                     for (int i = 0, l = storedBindable.strings.size(); i < l; i++) {
                         int index = storedBindable.strings.keyAt(i);
-                        sqliteQuery.bindString(index, storedBindable.strings.valueAt(i));
+                        sqliteQuery.bindString(index + 1, storedBindable.strings.valueAt(i));
                     }
 
                     for (int i = 0, l = storedBindable.blobs.size(); i < l; i++) {
                         int index = storedBindable.blobs.keyAt(i);
-                        sqliteQuery.bindBlob(index, storedBindable.blobs.valueAt(i));
+                        sqliteQuery.bindBlob(index + 1, storedBindable.blobs.valueAt(i));
                     }
 
                     return new SQLiteCursor(masterQuery, editTable, sqliteQuery);
