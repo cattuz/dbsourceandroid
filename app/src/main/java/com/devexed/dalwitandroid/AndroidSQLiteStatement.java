@@ -178,7 +178,7 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
                 throw new DatabaseException("No accessor is defined for parameter " + parameter);
             }
 
-            final int[] indexes = query.parameterIndices().get(parameter);
+            final int[] indexes = query.parameterIndices().get(parameterName);
 
             if (indexes == null) {
                 throw new DatabaseException("No mapping for parameter " + parameter);
