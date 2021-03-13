@@ -15,7 +15,7 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
      * update the database.
      */
     AndroidSQLiteTransaction(AndroidSQLiteAbstractDatabase parent) {
-        super(parent.connection, parent.accessorFactory, columnNameMapper);
+        super(parent.connection, parent.accessorFactory, parent.columnNameMapper);
         this.parent = parent;
     }
 
@@ -33,24 +33,6 @@ abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase im
     public final Transaction transact() {
         checkActive();
         return openChildTransaction(new AndroidSQLiteNestedTransaction(this));
-    }
-
-    @Override
-    public UpdateStatement createUpdate(Query query) {
-        checkActive();
-        return new AndroidSQLiteUpdateStatement(this, query);
-    }
-
-    @Override
-    public ExecutionStatement createExecution(Query query) {
-        checkActive();
-        return new AndroidSQLiteExecutionStatement(this, query);
-    }
-
-    @Override
-    public InsertStatement createInsert(Query query, Map<String, Class<?>> keys) {
-        checkActive();
-        return new AndroidSQLiteInsertStatement(this, query, keys);
     }
 
     @Override
