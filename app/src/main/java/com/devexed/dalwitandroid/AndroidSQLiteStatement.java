@@ -307,7 +307,9 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
         super.close();
 
         try {
-            statement.close();
+            if (statement != null) {
+                statement.close();
+            }
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
