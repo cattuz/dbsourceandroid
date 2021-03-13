@@ -7,7 +7,7 @@ import com.devexed.dalwit.ColumnNameMapper;
 import com.devexed.dalwit.DatabaseException;
 import com.devexed.dalwit.Transaction;
 
-final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
+public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 
     AndroidSQLiteDatabase(SQLiteDatabase connection,
                           AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory,
