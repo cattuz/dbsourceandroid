@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     implementation project(':dalwit-android:sqlite')
-    implementation 'com.devexed.dalwit:dalwit:0.9'
+    implementation project(':dalwit')
 }
 
 task sourceJar(type: Jar) {

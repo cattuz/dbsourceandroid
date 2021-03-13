@@ -1,1 +1,3 @@
 include ':app', ':sqlite'
+include ':dalwit'
+project(':dalwit').projectDir = file('../dalwit')
