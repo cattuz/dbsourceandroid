@@ -1,7 +1,7 @@
 package com.devexed.dalwitandroid;
 
 import android.database.Cursor;
-import android.database.SQLException;
+import org.sqlite.database.SQLException;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.AccessorFactory;
 import com.devexed.dalwit.ColumnNameMapper;
@@ -16,10 +16,10 @@ import com.devexed.dalwit.ReadonlyDatabase;
 public final class AndroidSQLiteConnection implements Connection {
 
     private final String url;
-    private final AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
+    private final AccessorFactory<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
     private final ColumnNameMapper columnNameMapper;
 
-    public AndroidSQLiteConnection(String url, AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory, ColumnNameMapper columnNameMapper) {
+    public AndroidSQLiteConnection(String url, AccessorFactory<AndroidSQLiteBindable, Cursor, SQLException> accessorFactory, ColumnNameMapper columnNameMapper) {
         this.url = url;
         this.accessorFactory = accessorFactory;
         this.columnNameMapper = columnNameMapper;

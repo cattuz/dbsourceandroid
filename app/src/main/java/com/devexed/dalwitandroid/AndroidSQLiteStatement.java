@@ -1,7 +1,7 @@
 package com.devexed.dalwitandroid;
 
 import android.annotation.SuppressLint;
-import android.database.SQLException;
+import org.sqlite.database.SQLException;
 import org.sqlite.database.sqlite.SQLiteCursor;
 import org.sqlite.database.sqlite.SQLiteCursorDriver;
 import org.sqlite.database.sqlite.SQLiteDatabase;
@@ -34,7 +34,7 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
 
     // Compiled statement if used as an update statement
     private SQLiteStatement statement = null;
-    private SQLiteBindable bindable = new StoredSQLiteBindable();
+    private AndroidSQLiteBindable bindable = new StoredSQLiteBindable();
 
     @SuppressLint("UseSparseArrays")
     public AndroidSQLiteStatement(AndroidSQLiteAbstractDatabase database, final Query query) {
@@ -172,7 +172,7 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
                 throw new DatabaseException("No type is defined for parameter " + parameter);
             }
 
-            final Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor = database.accessorFactory.create(parameterType);
+            final Accessor<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessor = database.accessorFactory.create(parameterType);
 
             if (accessor == null) {
                 throw new DatabaseException("No accessor is defined for parameter " + parameter);
@@ -281,7 +281,7 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
                 }
 
                 if (columnType != null) {
-                    Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor = database.accessorFactory.create(columnType);
+                    Accessor<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessor = database.accessorFactory.create(columnType);
 
                     if (accessor == null) {
                         throw new DatabaseException("No accessor is defined for type " + columnType + " (column " + rawColumnName + ")");
@@ -313,7 +313,7 @@ public class AndroidSQLiteStatement extends AbstractCloseable implements Stateme
         }
     }
 
-    private static final class StoredSQLiteBindable implements SQLiteBindable {
+    private static final class StoredSQLiteBindable implements AndroidSQLiteBindable {
         private final SparseArray<Object> nulls = new SparseArray<>();
         private final SparseArray<Long> longs = new SparseArray<>();
         private final SparseArray<String> strings = new SparseArray<>();

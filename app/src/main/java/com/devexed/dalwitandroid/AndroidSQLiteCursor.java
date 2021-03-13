@@ -1,6 +1,6 @@
 package com.devexed.dalwitandroid;
 
-import android.database.SQLException;
+import org.sqlite.database.SQLException;
 import com.devexed.dalwit.Accessor;
 import com.devexed.dalwit.Cursor;
 import com.devexed.dalwit.DatabaseException;
@@ -69,11 +69,11 @@ final class AndroidSQLiteCursor extends AbstractCloseable implements Cursor {
 
     static final class SQLiteGetter implements Cursor.Getter<Object> {
 
-        private final Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor;
+        private final Accessor<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessor;
         private final android.database.Cursor cursor;
         private final int index;
 
-        SQLiteGetter(Accessor<SQLiteBindable, android.database.Cursor, SQLException> accessor, android.database.Cursor cursor, int index) {
+        SQLiteGetter(Accessor<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessor, android.database.Cursor cursor, int index) {
             this.accessor = accessor;
             this.cursor = cursor;
             this.index = index;

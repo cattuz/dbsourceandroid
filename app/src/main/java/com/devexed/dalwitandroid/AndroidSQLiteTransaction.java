@@ -1,6 +1,6 @@
 package com.devexed.dalwitandroid;
 
-import android.database.SQLException;
+import org.sqlite.database.SQLException;
 import com.devexed.dalwit.*;
 
 import java.util.Map;

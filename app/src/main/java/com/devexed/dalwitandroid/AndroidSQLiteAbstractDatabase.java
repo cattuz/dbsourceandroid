@@ -1,7 +1,7 @@
 package com.devexed.dalwitandroid;
 
 import android.database.Cursor;
-import android.database.SQLException;
+import org.sqlite.database.SQLException;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.*;
 import com.devexed.dalwit.util.AbstractCloseable;
@@ -9,13 +9,13 @@ import com.devexed.dalwit.util.AbstractCloseable;
 abstract class AndroidSQLiteAbstractDatabase extends AbstractCloseable implements Database {
 
     final SQLiteDatabase connection;
-    final AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
+    final AccessorFactory<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessorFactory;
     final ColumnNameMapper columnNameMapper;
 
     private String version = null;
     private AndroidSQLiteTransaction child = null;
 
-    AndroidSQLiteAbstractDatabase(SQLiteDatabase connection, AccessorFactory<SQLiteBindable, Cursor, SQLException> accessorFactory, ColumnNameMapper columnNameMapper) {
+    AndroidSQLiteAbstractDatabase(SQLiteDatabase connection, AccessorFactory<AndroidSQLiteBindable, Cursor, SQLException> accessorFactory, ColumnNameMapper columnNameMapper) {
         this.connection = connection;
         this.accessorFactory = accessorFactory;
         this.columnNameMapper = columnNameMapper;

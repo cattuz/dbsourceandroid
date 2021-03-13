@@ -2,7 +2,7 @@ package com.devexed.dalwitandroid;
 
 import org.sqlite.database.sqlite.SQLiteStatement;
 
-final class SQLiteStatementBindable implements SQLiteBindable {
+final class SQLiteStatementBindable implements AndroidSQLiteBindable {
 
     private final SQLiteStatement statement;
 

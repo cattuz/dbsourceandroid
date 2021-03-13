@@ -1,6 +1,6 @@
 package com.devexed.dalwitandroid;
 
-import android.database.SQLException;
+import org.sqlite.database.SQLException;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import com.devexed.dalwit.AccessorFactory;
 import com.devexed.dalwit.ColumnNameMapper;
@@ -9,9 +9,9 @@ import com.devexed.dalwit.Transaction;
 
 public final class AndroidSQLiteDatabase extends AndroidSQLiteAbstractDatabase {
 
-    AndroidSQLiteDatabase(SQLiteDatabase connection,
-                          AccessorFactory<SQLiteBindable, android.database.Cursor, SQLException> accessorFactory,
-                          ColumnNameMapper columnNameMapper) {
+    public AndroidSQLiteDatabase(SQLiteDatabase connection,
+                                 AccessorFactory<AndroidSQLiteBindable, android.database.Cursor, SQLException> accessorFactory,
+                                 ColumnNameMapper columnNameMapper) {
         super(connection, accessorFactory, columnNameMapper);
     }
 
