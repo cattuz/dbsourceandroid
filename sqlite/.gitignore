@@ -1,0 +1,16 @@
+# Intellij project files
+.idea/
+.projectFilesBackup/
+*.iml
+*.log
+local.properties
+
+# Gradle runtime
+.gradle/
+
+# Build output
+build/
+.apk
+
+# NDK
+.cxx

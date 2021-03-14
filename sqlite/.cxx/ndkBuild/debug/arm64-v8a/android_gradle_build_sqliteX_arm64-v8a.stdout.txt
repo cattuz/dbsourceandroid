@@ -1,2 +1,0 @@
-[arm64-v8a] Compile++      : sqliteX <= android_database_SQLiteGlobal.cpp
-[arm64-v8a] SharedLibrary  : libsqliteX.so
