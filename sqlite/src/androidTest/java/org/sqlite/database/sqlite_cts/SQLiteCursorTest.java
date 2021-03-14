@@ -17,7 +17,6 @@
 package org.sqlite.database.sqlite_cts;
 
 
-import android.content.Context;
 import android.database.AbstractCursor;
 import android.database.Cursor;
 import android.database.CursorWindow;

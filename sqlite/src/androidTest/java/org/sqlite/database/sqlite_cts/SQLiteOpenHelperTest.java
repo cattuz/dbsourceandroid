@@ -26,8 +26,6 @@ import org.sqlite.database.sqlite.SQLiteQuery;
 import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.test.AndroidTestCase;
 
-import java.io.File;
-
 /**
  * Test {@link SQLiteOpenHelper}.
  */

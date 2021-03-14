@@ -27,7 +27,7 @@ import org.sqlite.database.sqlite.SQLiteCursor;
 import org.sqlite.database.sqlite.SQLiteCursorDriver;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import org.sqlite.database.sqlite.SQLiteQuery;
-import org.sqlite.database.sqlite.SQLiteStatement;
+
 import android.os.Looper;
 import android.test.AndroidTestCase;
 import android.test.PerformanceTestCase;

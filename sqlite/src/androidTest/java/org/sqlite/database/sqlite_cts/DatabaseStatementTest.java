@@ -16,7 +16,6 @@
 
 package org.sqlite.database.sqlite_cts;
 
-import android.content.Context;
 import android.database.Cursor;
 import org.sqlite.database.sqlite.SQLiteConstraintException;
 import org.sqlite.database.sqlite.SQLiteDatabase;

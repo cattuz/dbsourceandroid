@@ -18,12 +18,9 @@ package org.sqlite.database.sqlite_cts;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.Semaphore;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import org.sqlite.database.DatabaseUtils;
 import org.sqlite.database.SQLException;
@@ -31,14 +28,11 @@ import org.sqlite.database.sqlite.SQLiteCursor;
 import org.sqlite.database.sqlite.SQLiteCursorDriver;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import org.sqlite.database.sqlite.SQLiteDatabase.CursorFactory;
-import org.sqlite.database.sqlite.SQLiteException;
 import org.sqlite.database.sqlite.SQLiteQuery;
 import org.sqlite.database.sqlite.SQLiteStatement;
 import org.sqlite.database.sqlite.SQLiteTransactionListener;
 import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
 public class SQLiteDatabaseTest extends AndroidTestCase {
     private SQLiteDatabase mDatabase;

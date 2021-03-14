@@ -18,7 +18,6 @@ package org.sqlite.database.database_cts;
 
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import org.sqlite.database.DatabaseUtils.InsertHelper;
 import org.sqlite.database.sqlite.SQLiteDatabase;

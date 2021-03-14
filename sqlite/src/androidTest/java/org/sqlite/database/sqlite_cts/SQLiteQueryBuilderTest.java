@@ -17,7 +17,6 @@
 package org.sqlite.database.sqlite_cts;
 
 
-import android.content.Context;
 import android.database.Cursor;
 import org.sqlite.database.sqlite.SQLiteCursor;
 import org.sqlite.database.sqlite.SQLiteCursorDriver;

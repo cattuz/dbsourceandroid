@@ -3,8 +3,6 @@ package com.devexed.dalwitandroid;
 import org.sqlite.database.SQLException;
 import com.devexed.dalwit.*;
 
-import java.util.Map;
-
 abstract class AndroidSQLiteTransaction extends AndroidSQLiteAbstractDatabase implements Transaction {
 
     private final AndroidSQLiteAbstractDatabase parent;
