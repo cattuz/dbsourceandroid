@@ -33,7 +33,7 @@ namespace android {
 // Limit heap to 8MB for now.  This is 4 times the maximum cursor window
 // size, as has been used by the original code in SQLiteDatabase for
 // a long time.
-static const int SOFT_HEAP_LIMIT = 20 * 1024 * 1024;
+static const int SOFT_HEAP_LIMIT = 8 * 1024 * 1024;
 
 
 // Called each time a message is logged.
