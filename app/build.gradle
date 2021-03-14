@@ -3,7 +3,6 @@ apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 11
