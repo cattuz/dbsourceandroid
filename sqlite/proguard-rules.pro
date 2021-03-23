@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# SQLite
+-keep class org.sqlite.database.sqlite.** { *; }
