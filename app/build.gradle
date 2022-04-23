@@ -6,8 +6,6 @@ android {
 
     defaultConfig {
         minSdkVersion 11
-        versionCode 8
-        versionName "0.8"
     }
 }
 
