@@ -7,6 +7,7 @@ android {
     defaultConfig {
         minSdkVersion 11
     }
+    namespace 'com.devexed.dalwitandroid'
 }
 
 repositories {

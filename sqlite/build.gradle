@@ -35,6 +35,7 @@ android {
 
     useLibrary 'android.test.base' // for android.test.AndroidTestCase
     useLibrary 'android.test.runner' // for android.test.MoreAsserts
+    namespace 'org.sqlite.database'
 }
 
 dependencies {
